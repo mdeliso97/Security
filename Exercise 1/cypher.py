@@ -1,4 +1,6 @@
 import tkinter as tk
+from tkinter import filedialog
+
 import pygame
 
 from ECB import *
@@ -7,12 +9,27 @@ from AES_GCM import *
 from RES import *
 
 
-def on_button0_click():
-    label0.config(text="Button Clicked!")
+def open_file_dialog():
+    file_path = filedialog.askopenfilename(
+        title="Select a .txt file", filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")])  # Specify file types
+
+    if file_path:
+        if file_path.endswith(".txt"):
+            # Read and process the .txt file
+            label1.config(text="Success: file stored successfully!")
+
+            with open(file_path, "r") as file:
+                content = file.read()
+                # Do something with the content
+                print("File content:\n", content)
+        else:
+            label1.config(text="Error: selected file is not a .txt file!")
+            file_path = "Empty"
+    return file_path
 
 
 def on_button1_click():
-    label0.config(text="Button Clicked!")
+    label1.config(text="Button Clicked!")
 
 
 # Define an exit event handler to stop the audio
@@ -74,7 +91,7 @@ if __name__ == '__main__':
     title_color = "blue"  # Change the text color
 
     # Adjust size
-    root.geometry("300x400")
+    root.geometry("300x450")
 
     # datatype of menu text
     clicked0 = tk.StringVar()
@@ -89,10 +106,11 @@ if __name__ == '__main__':
     drop1 = tk.OptionMenu(root, clicked1, *["RES"])
 
     label0 = tk.Label(root, text="Cypher 8-bit", font=title_font, foreground=title_color)
+    label1 = tk.Label(root, text="Welcome!", font=11, foreground="red")
 
     # button0 = tk.Button(root, text="menu", command=show0)
     # button1 = tk.Button(root, text="menu", command=show1)
-    button2 = tk.Button(root, text="Source File", command=on_button0_click)
+    button2 = tk.Button(root, text="Source File", command=open_file_dialog)
     button3 = tk.Button(root, text="Source Key", command=on_button1_click)
     button4 = tk.Button(root, text="Exit", command=on_closing)
     button5 = tk.Button(root, text="Start", command=start)
@@ -103,7 +121,8 @@ if __name__ == '__main__':
     button2.pack(pady=10)
     button3.pack(pady=20)
     button5.pack(pady=10)
-    button4.pack(pady=10)
+    button4.pack(pady=20)
+    label1.pack(pady=10)
 
     # Bind the exit event handler to the window's close button
     root.protocol("WM_DELETE_WINDOW", on_closing)
