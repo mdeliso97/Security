@@ -1,8 +1,9 @@
 import tkinter as tk
 import pygame
 
-import encryption
-from encryption import *
+from ECB import *
+from CBC import *
+from AES_GCM import *
 
 
 def on_button0_click():
@@ -19,12 +20,16 @@ def on_closing():
     root.destroy()
 
 
-def menu_action0():
-    encryption.ecb(label0)
+def menu0_action0():
+    ecb(label0)
 
 
-def menu_action1():
-    encryption.cbc(label0)
+def menu0_action1():
+    cbc(label0)
+
+
+def menu0_action2():
+    aes_gcm(label0)
 
 
 # Change the label text
@@ -37,7 +42,6 @@ def show1():
 
 
 if __name__ == '__main__':
-
     # Initialize pygame
     pygame.mixer.init()
 
