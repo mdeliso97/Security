@@ -4,6 +4,7 @@ import pygame
 from ECB import *
 from CBC import *
 from AES_GCM import *
+from RES import *
 
 
 def on_button0_click():
@@ -20,6 +21,20 @@ def on_closing():
     root.destroy()
 
 
+def start():
+    print(clicked0.get())
+    print(clicked1.get())
+    if clicked0.get() == "ECB" and clicked1.get() == "RES":
+        print("ecb")
+        #ecb(file)
+        #res(file)
+
+    elif clicked0.get() == "CBC" and clicked1.get() == "RES":
+        print("cbc")
+        #cbc(file)
+        #res(file)
+
+
 def menu0_action0():
     ecb(label0)
 
@@ -33,12 +48,18 @@ def menu0_action2():
 
 
 # Change the label text
-def show0():
-    label0.config(text=clicked0.get())
-
-
-def show1():
-    label0.config(text=clicked1.get())
+# def show0():
+#     label0.config(text=clicked0.get())
+#     user_input0 = clicked0.get()
+#     print(user_input0)
+#     return user_input0
+#
+#
+# def show1():
+#     label0.config(text=clicked1.get())
+#     user_input1 = clicked1.get()
+#     print(user_input1)
+#     return user_input1
 
 
 if __name__ == '__main__':
@@ -69,21 +90,26 @@ if __name__ == '__main__':
 
     label0 = tk.Label(root, text="Cypher 8-bit", font=title_font, foreground=title_color)
 
-    button0 = tk.Button(root, text="menu", command=show0)
-    button1 = tk.Button(root, text="menu", command=show1)
+    # button0 = tk.Button(root, text="menu", command=show0)
+    # button1 = tk.Button(root, text="menu", command=show1)
     button2 = tk.Button(root, text="Source File", command=on_button0_click)
     button3 = tk.Button(root, text="Source Key", command=on_button1_click)
     button4 = tk.Button(root, text="Exit", command=on_closing)
+    button5 = tk.Button(root, text="Start", command=start)
 
     label0.pack(pady=20)
     drop0.pack(pady=10)
     drop1.pack(pady=10)
     button2.pack(pady=10)
     button3.pack(pady=20)
+    button5.pack(pady=10)
     button4.pack(pady=10)
 
     # Bind the exit event handler to the window's close button
     root.protocol("WM_DELETE_WINDOW", on_closing)
+
+    # Bind with start button
+    root.protocol("START", start)
 
     # Load and play the MP3 file
     pygame.mixer.music.load("jeremy_blake-powerup.mp3")

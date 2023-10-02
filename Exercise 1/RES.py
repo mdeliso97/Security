@@ -1,0 +1,2 @@
+def res(label):
+    return
