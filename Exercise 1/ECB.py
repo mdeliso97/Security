@@ -14,12 +14,18 @@ def ecb(label):
     # Create an AES cipher object in ECB mode
     cipher = AES.new(key, AES.MODE_ECB)
 
-    # Encryption
-    padded_plaintext = pad(plaintext, AES.block_size)
-    ciphertext = cipher.encrypt(padded_plaintext)
+    return label.config(text="Button ecb!")
 
+
+def ecb_encrypt(key, message, cipher):
+    # Encryption
+    padded_plaintext = pad(message, AES.block_size)
+    ciphertext = cipher.encrypt(padded_plaintext)
+    return
+
+
+def ecb_decrypt(key, message, cipher):
     # Decryption
     decipher = AES.new(key, AES.MODE_ECB)
-    decrypted_data = unpad(decipher.decrypt(ciphertext), AES.block_size)
-
-    return label.config(text="Button ecb!")
+    decrypted_data = unpad(decipher.decrypt(message), AES.block_size)
+    return
