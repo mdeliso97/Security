@@ -1,2 +1,2 @@
-def cbc(label):
-    return label.config(text="Button cbc!")
+def cbc(content, is_encrypt):
+    return print("Button cbc!")

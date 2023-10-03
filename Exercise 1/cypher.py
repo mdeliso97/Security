@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
-
+import functools
 import pygame
 
 from ECB import *
@@ -9,7 +9,9 @@ from AES_GCM import *
 from RES import *
 
 
-def open_file_dialog():
+def open_file():
+    global content
+
     file_path = filedialog.askopenfilename(
         title="Select a .txt file", filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")])  # Specify file types
 
@@ -20,12 +22,10 @@ def open_file_dialog():
 
             with open(file_path, "r") as file:
                 content = file.read()
-                # Do something with the content
+                # print content
                 print("File content:\n", content)
         else:
             label1.config(text="Error: selected file is not a .txt file!")
-            file_path = "Empty"
-    return file_path
 
 
 def on_button1_click():
@@ -38,50 +38,40 @@ def on_closing():
     root.destroy()
 
 
+# def bool_case():
+#     if is_encrypt:
+#         is_encrypt = False
+#
+#     else:
+#         is_encrypt = True
+
+
 def start():
     print(clicked0.get())
     print(clicked1.get())
     if clicked0.get() == "ECB" and clicked1.get() == "RES":
-        print("ecb")
-        #ecb(file)
-        #res(file)
+        message = ecb(content, is_encrypt)
+
+        # Write the result to a new text file
+        with open("output.txt", "w") as output_file:
+            output_file.write(message)
+            label1.config(text="Success: result written to output.txt")
 
     elif clicked0.get() == "CBC" and clicked1.get() == "RES":
-        print("cbc")
-        #cbc(file)
-        #res(file)
+        message = cbc(content, is_encrypt)
 
-
-def menu0_action0():
-    ecb(label0)
-
-
-def menu0_action1():
-    cbc(label0)
-
-
-def menu0_action2():
-    aes_gcm(label0)
-
-
-# Change the label text
-# def show0():
-#     label0.config(text=clicked0.get())
-#     user_input0 = clicked0.get()
-#     print(user_input0)
-#     return user_input0
-#
-#
-# def show1():
-#     label0.config(text=clicked1.get())
-#     user_input1 = clicked1.get()
-#     print(user_input1)
-#     return user_input1
+        # Write the result to a new text file
+        with open("output.txt", "w") as output_file:
+            output_file.write(message)
+            label1.config(text="Success: result written to output.txt")
 
 
 if __name__ == '__main__':
     # Initialize pygame
     pygame.mixer.init()
+
+    global content
+    global is_encrypt
 
     root = tk.Tk()
     root.title("Cypher 8-bit")
@@ -110,16 +100,20 @@ if __name__ == '__main__':
 
     # button0 = tk.Button(root, text="menu", command=show0)
     # button1 = tk.Button(root, text="menu", command=show1)
-    button2 = tk.Button(root, text="Source File", command=open_file_dialog)
+    button2 = tk.Button(root, text="Source File", command=open_file)
     button3 = tk.Button(root, text="Source Key", command=on_button1_click)
     button4 = tk.Button(root, text="Exit", command=on_closing)
     button5 = tk.Button(root, text="Start", command=start)
+
+    is_encrypt = tk.BooleanVar()
+    checkbox0 = tk.Checkbutton(root, text="Checked encrypt. / Unchecked decrypt.", variable=is_encrypt)
 
     label0.pack(pady=20)
     drop0.pack(pady=10)
     drop1.pack(pady=10)
     button2.pack(pady=10)
     button3.pack(pady=20)
+    checkbox0.pack(pady=10)
     button5.pack(pady=10)
     button4.pack(pady=20)
     label1.pack(pady=10)
