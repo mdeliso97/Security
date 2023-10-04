@@ -47,8 +47,8 @@ def on_closing():
 
 
 def start():
-    print(clicked0.get())
-    print(clicked1.get())
+    # print(clicked0.get())
+    # print(clicked1.get())
     if clicked0.get() == "ECB" and clicked1.get() == "RES":
         message = ecb(content, is_encrypt)
 
@@ -67,6 +67,7 @@ def start():
 
 
 if __name__ == '__main__':
+
     # Initialize pygame
     pygame.mixer.init()
 
@@ -100,6 +101,7 @@ if __name__ == '__main__':
 
     # button0 = tk.Button(root, text="menu", command=show0)
     # button1 = tk.Button(root, text="menu", command=show1)
+
     button2 = tk.Button(root, text="Source File", command=open_file)
     button3 = tk.Button(root, text="Source Key", command=on_button1_click)
     button4 = tk.Button(root, text="Exit", command=on_closing)

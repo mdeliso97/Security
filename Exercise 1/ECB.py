@@ -7,14 +7,15 @@ from Crypto.Random import get_random_bytes
 
 
 def ecb(message, is_encrypt):
+
     # Key and plaintext
     key = get_random_bytes(16)  # 128-bit key
 
     # Create an AES cipher object in ECB mode
     cipher = AES.new(key, AES.MODE_ECB)
 
-    if is_encrypt:
-        message = ecb_decrypt(message, cipher)
+    if is_encrypt.get():
+        message = ecb_encrypt(message, cipher)
     else:
         message = ecb_decrypt(key, message)
 
