@@ -11,11 +11,13 @@ def ecb(message, is_encrypt):
     # Key and plaintext
     key = get_random_bytes(16)  # 128-bit key
 
+    message = message.encode('utf-8')
+
     # Create an AES cipher object in ECB mode
     cipher = AES.new(key, AES.MODE_ECB)
 
     if is_encrypt.get():
-        message, key = ecb_encrypt(message, cipher)
+        message = ecb_encrypt(message, cipher)
     else:
         message = ecb_decrypt(message, key)
 

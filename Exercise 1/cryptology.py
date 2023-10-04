@@ -52,7 +52,7 @@ def source_key():
                 # print content
                 print("File content:\n", key)
         else:
-            label1.config(text="Error: selected file is neither a .txt file!")
+            label1.config(text="Error: selected file is not a .txt file!")
 
 
 def hide_option():
@@ -72,9 +72,11 @@ def start():
     if clicked0.get() == "ECB" and clicked1.get() == "RES":
         message = ecb(content, is_encrypt)
 
+        print(message)
+
         # Write the result to a new text file in rb format (byte string)
-        with open("output.txt", "rb") as output_file:
-            output_file.write(message)
+        with open("output.txt", "w") as output_file:
+            output_file.write(str(message))
             label1.config(text="Success: result written to output.txt")
 
     elif clicked0.get() == "CBC" and clicked1.get() == "RES":
