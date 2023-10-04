@@ -153,3 +153,5 @@ cython_debug/
 # .idea/
 Exercise 1/.idea/Exercise 1.iml
 Exercise 1/.idea/misc.xml
+*.xml
+*.iml
