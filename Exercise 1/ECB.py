@@ -6,10 +6,12 @@ from Crypto.Util.Padding import unpad
 from Crypto.Random import get_random_bytes
 
 
-def ecb(message, is_encrypt):
+def ecb(message, is_encrypt, key):
 
     # Key and plaintext
-    key = get_random_bytes(16)  # 128-bit key
+
+    if key == 0:
+        key = get_random_bytes(16)  # 128-bit key
 
     message = message.encode('utf-8')
 

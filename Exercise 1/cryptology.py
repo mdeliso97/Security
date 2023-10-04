@@ -3,6 +3,7 @@ from tkinter import filedialog
 import functools
 import pygame
 
+import ECB
 from ECB import *
 from CBC import *
 from AES_GCM import *
@@ -11,9 +12,10 @@ from RES import *
 
 def open_file():
     global content
+    global key
 
     file_path = filedialog.askopenfilename(
-        title="Select a .txt file", filetypes=[("Text Files", "*.txt"), ("Json Files", "*.json")])  # Specify file types
+        title="Select a .txt file", filetypes=[("Text Files", "*.txt"), ("Json Files", "*.json"), ("All Files", "*.*")])  # Specify file types
 
     if file_path:
         if file_path.endswith(".txt"):
@@ -37,7 +39,7 @@ def open_file():
 
 
 def source_key():
-    global key
+    global key_pub
     file_path = filedialog.askopenfilename(
         title="Select the key.txt file",
         filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")])  # Specify file types
@@ -48,7 +50,7 @@ def source_key():
             label1.config(text="Success: file .txt uploaded successfully!")
 
             with open(file_path, "r") as file:
-                key = file.read()
+                key_pub = file.read()
                 # print content
                 print("File content:\n", key)
         else:
@@ -69,32 +71,43 @@ def on_closing():
 
 
 def start():
+    global key
+    global is_encrypt
+
+    if key is None:
+        key = 0
+
     if clicked0.get() == "ECB" and clicked1.get() == "RES":
-        message = ecb(content, is_encrypt)
+        message, key = ECB.ecb_encrypt(content, is_encrypt, key)
+        message, key = ECB.ecb_decrypt(content, is_encrypt, key)
 
         print(message)
 
         # Write the result to a new text file in rb format (byte string)
-        with open("output.txt", "w") as output_file:
+        with open("output", "w") as output_file:
             output_file.write(str(message))
-            label1.config(text="Success: result written to output.txt")
+            # label1.config(text="Success: result written to output.txt")
+
+        with open("key", "w") as output_file:
+            output_file.write(str(key))
+            label1.config(text="Success: encrypted file written to <output> and key to <key>")
 
     elif clicked0.get() == "CBC" and clicked1.get() == "RES":
         message, key = cbc(content, is_encrypt)
 
         # Write the result to a new text or json file
         if is_encrypt:
-            with open("output.json", "w") as output_file:
+            with open("output", "w") as output_file:
                 output_file.write(message)
 
-            with open("key.txt", "w") as output_file:
+            with open("key", "w") as output_file:
                 output_file.write(key)
-                label1.config(text=f"Success: encrypted file written to output.txt and key to key.txt")
+                label1.config(text="Success: encrypted file written to <output> and key to <key>")
 
         else:
-            with open("output.txt", "w") as output_file:
+            with open("output", "w") as output_file:
                 output_file.write(message)
-                label1.config(text=f"Success: decrypted file written to output.txt")
+                label1.config(text="Success: decrypted file written to <output>")
 
 
 if __name__ == '__main__':
@@ -102,8 +115,9 @@ if __name__ == '__main__':
     pygame.mixer.init()
 
     global content
-    global key
-    global is_encrypt
+    global key_pub
+
+    key = None
 
     root = tk.Tk()
     root.title("Crypto 8-bit")
