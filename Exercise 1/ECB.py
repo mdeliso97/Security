@@ -17,7 +17,7 @@ def ecb(message, is_encrypt):
     if is_encrypt.get():
         message = ecb_encrypt(message, cipher)
     else:
-        message = ecb_decrypt(key, message)
+        message = ecb_decrypt(message, key)
 
     return message
 
@@ -26,11 +26,11 @@ def ecb_encrypt(message, cipher):
     print("encrypt!")
     # Encryption
     padded_plaintext = pad(message, AES.block_size)
-    ciphertext = cipher.encrypt(padded_plaintext)
-    return ciphertext
+    message = cipher.encrypt(padded_plaintext)
+    return message, key
 
 
-def ecb_decrypt(key, message):
+def ecb_decrypt(message, key):
     print("decrypt!")
     # Decryption
     decipher = AES.new(key, AES.MODE_ECB)

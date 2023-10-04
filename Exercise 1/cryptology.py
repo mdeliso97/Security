@@ -13,23 +13,38 @@ def open_file():
     global content
 
     file_path = filedialog.askopenfilename(
-        title="Select a .txt file", filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")])  # Specify file types
+        title="Select a .txt file", filetypes=[("Text Files", "*.txt"), ("Json Files", "*.json")])  # Specify file types
 
     if file_path:
         if file_path.endswith(".txt"):
             # Read and process the .txt file
-            label1.config(text="Success: file stored successfully!")
+            label1.config(text="Success: file .txt uploaded successfully!")
+
+            with open(file_path, "r") as file:
+                content = file.read()
+                # print content
+                print("File content:\n", content)
+        elif file_path.endswith(".json"):
+            # Read and process the .txt file
+            label1.config(text="Success: file .json uploaded successfully!")
 
             with open(file_path, "r") as file:
                 content = file.read()
                 # print content
                 print("File content:\n", content)
         else:
-            label1.config(text="Error: selected file is not a .txt file!")
+            label1.config(text="Error: selected file is neither a .txt nor .json file!")
 
 
-def on_button1_click():
+def source_key():
     label1.config(text="Button Clicked!")
+
+
+def hide_option():
+    if is_encrypt.get():
+        button3.pack_forget()
+    else:
+        button3.pack(before=button5)
 
 
 # Define an exit event handler to stop the audio
@@ -38,32 +53,28 @@ def on_closing():
     root.destroy()
 
 
-# def bool_case():
-#     if is_encrypt:
-#         is_encrypt = False
-#
-#     else:
-#         is_encrypt = True
-
-
 def start():
-    # print(clicked0.get())
-    # print(clicked1.get())
     if clicked0.get() == "ECB" and clicked1.get() == "RES":
         message = ecb(content, is_encrypt)
 
-        # Write the result to a new text file
-        with open("output.txt", "w") as output_file:
+        # Write the result to a new text file in rb format (byte string)
+        with open("output.txt", "rb") as output_file:
             output_file.write(message)
             label1.config(text="Success: result written to output.txt")
 
     elif clicked0.get() == "CBC" and clicked1.get() == "RES":
         message = cbc(content, is_encrypt)
 
-        # Write the result to a new text file
-        with open("output.txt", "w") as output_file:
-            output_file.write(message)
-            label1.config(text="Success: result written to output.txt")
+        # Write the result to a new text or json file
+        if is_encrypt:
+            with open("output.json", "w") as output_file:
+                output_file.write(message)
+                label1.config(text=f"Success: encrypted written to output.json")
+
+        else:
+            with open("output.txt", "w") as output_file:
+                output_file.write(message)
+                label1.config(text=f"Success: decrypted file written to output.txt")
 
 
 if __name__ == '__main__':
@@ -75,7 +86,7 @@ if __name__ == '__main__':
     global is_encrypt
 
     root = tk.Tk()
-    root.title("Cypher 8-bit")
+    root.title("Crypto 8-bit")
 
     # Define a custom font and foreground color for the title
     title_font = ("Helvetica", 24, "bold")  # Change the font family, size, and style
@@ -96,26 +107,23 @@ if __name__ == '__main__':
     drop0 = tk.OptionMenu(root, clicked0, *["ECB", "CBC", "AES-GCM"])
     drop1 = tk.OptionMenu(root, clicked1, *["RES"])
 
-    label0 = tk.Label(root, text="Cypher 8-bit", font=title_font, foreground=title_color)
+    label0 = tk.Label(root, text="Crypto 8-bit", font=title_font, foreground=title_color)
     label1 = tk.Label(root, text="Welcome!", font=11, foreground="red")
 
-    # button0 = tk.Button(root, text="menu", command=show0)
-    # button1 = tk.Button(root, text="menu", command=show1)
-
     button2 = tk.Button(root, text="Source File", command=open_file)
-    button3 = tk.Button(root, text="Source Key", command=on_button1_click)
+    button3 = tk.Button(root, text="Source Key", command=source_key)
     button4 = tk.Button(root, text="Exit", command=on_closing)
     button5 = tk.Button(root, text="Start", command=start)
 
     is_encrypt = tk.BooleanVar()
-    checkbox0 = tk.Checkbutton(root, text="Checked encrypt. / Unchecked decrypt.", variable=is_encrypt)
-
+    checkbox0 = tk.Checkbutton(root, text="Checked encrypt. / Unchecked decrypt.", variable=is_encrypt,
+                               command=hide_option)
     label0.pack(pady=20)
     drop0.pack(pady=10)
     drop1.pack(pady=10)
+    checkbox0.pack(pady=10)
     button2.pack(pady=10)
     button3.pack(pady=20)
-    checkbox0.pack(pady=10)
     button5.pack(pady=10)
     button4.pack(pady=20)
     label1.pack(pady=10)
