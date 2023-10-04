@@ -37,7 +37,22 @@ def open_file():
 
 
 def source_key():
-    label1.config(text="Button Clicked!")
+    global key
+    file_path = filedialog.askopenfilename(
+        title="Select the key.txt file",
+        filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")])  # Specify file types
+
+    if file_path:
+        if file_path.endswith(".txt"):
+            # Read and process the .txt file
+            label1.config(text="Success: file .txt uploaded successfully!")
+
+            with open(file_path, "r") as file:
+                key = file.read()
+                # print content
+                print("File content:\n", key)
+        else:
+            label1.config(text="Error: selected file is neither a .txt file!")
 
 
 def hide_option():
@@ -63,13 +78,16 @@ def start():
             label1.config(text="Success: result written to output.txt")
 
     elif clicked0.get() == "CBC" and clicked1.get() == "RES":
-        message = cbc(content, is_encrypt)
+        message, key = cbc(content, is_encrypt)
 
         # Write the result to a new text or json file
         if is_encrypt:
             with open("output.json", "w") as output_file:
                 output_file.write(message)
-                label1.config(text=f"Success: encrypted written to output.json")
+
+            with open("key.txt", "w") as output_file:
+                output_file.write(key)
+                label1.config(text=f"Success: encrypted file written to output.txt and key to key.txt")
 
         else:
             with open("output.txt", "w") as output_file:
@@ -78,11 +96,11 @@ def start():
 
 
 if __name__ == '__main__':
-
     # Initialize pygame
     pygame.mixer.init()
 
     global content
+    global key
     global is_encrypt
 
     root = tk.Tk()

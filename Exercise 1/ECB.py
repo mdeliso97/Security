@@ -15,19 +15,19 @@ def ecb(message, is_encrypt):
     cipher = AES.new(key, AES.MODE_ECB)
 
     if is_encrypt.get():
-        message = ecb_encrypt(message, cipher)
+        message, key = ecb_encrypt(message, cipher)
     else:
         message = ecb_decrypt(message, key)
 
-    return message
+    return message, key
 
 
 def ecb_encrypt(message, cipher):
     print("encrypt!")
     # Encryption
     padded_plaintext = pad(message, AES.block_size)
-    message = cipher.encrypt(padded_plaintext)
-    return message, key
+    encrypted_text = cipher.encrypt(padded_plaintext)
+    return encrypted_text
 
 
 def ecb_decrypt(message, key):
