@@ -6,37 +6,35 @@ from Crypto.Util.Padding import unpad
 from Crypto.Random import get_random_bytes
 
 
-def ecb(message, is_encrypt, key):
+def ecb_encrypt(message):
+    BLOCK_SIZE = 32  # Bytes
 
-    # Key and plaintext
-
-    if key == 0:
-        key = get_random_bytes(16)  # 128-bit key
+    key = 'abcdefghijklmnop'
 
     message = message.encode('utf-8')
 
     # Create an AES cipher object in ECB mode
-    cipher = AES.new(key, AES.MODE_ECB)
+    cipher = AES.new(key.encode('utf8'), AES.MODE_ECB)
 
-    if is_encrypt.get():
-        message = ecb_encrypt(message, cipher)
-    else:
-        message = ecb_decrypt(message, key)
-
-    return message, key
-
-
-def ecb_encrypt(message, cipher):
     print("encrypt!")
     # Encryption
-    padded_plaintext = pad(message, AES.block_size)
-    encrypted_text = cipher.encrypt(padded_plaintext)
-    return encrypted_text
+    encrypted_text = cipher.encrypt(pad(message, BLOCK_SIZE))
+    #padded_plaintext = pad(message, AES.block_size)
+    #encrypted_text = cipher.encrypt(padded_plaintext)
+    return encrypted_text, key
 
 
 def ecb_decrypt(message, key):
+    BLOCK_SIZE = 32  # Bytes
     print("decrypt!")
+
+    key = 'abcdefghijklmnop'
+
+    message = message.encode('utf-8')
+
     # Decryption
-    decipher = AES.new(key, AES.MODE_ECB)
-    decrypted_text = unpad(decipher.decrypt(message), AES.block_size)
+    decipher = AES.new(key.encode('utf8'), AES.MODE_ECB)
+    # decrypted_text = decipher.decrypt(message)
+    # decrypted_text = unpad(decrypted_text, BLOCK_SIZE)
+    decrypted_text = unpad(decipher.decrypt(message), BLOCK_SIZE)
     return decrypted_text

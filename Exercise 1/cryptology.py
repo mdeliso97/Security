@@ -15,46 +15,47 @@ def open_file():
     global key
 
     file_path = filedialog.askopenfilename(
-        title="Select a .txt file", filetypes=[("Text Files", "*.txt"), ("Json Files", "*.json"), ("All Files", "*.*")])  # Specify file types
+        title="Select a file", filetypes=[("All Files", "*.*")])  # Specify file types
 
     if file_path:
-        if file_path.endswith(".txt"):
-            # Read and process the .txt file
-            label1.config(text="Success: file .txt uploaded successfully!")
+        # if file_path.endswith(".*"):
+        # Read and process the .txt file
+        label1.config(text="Success: file to be encrypted/decrypted uploaded!")
 
-            with open(file_path, "r") as file:
-                content = file.read()
-                # print content
-                print("File content:\n", content)
-        elif file_path.endswith(".json"):
-            # Read and process the .txt file
-            label1.config(text="Success: file .json uploaded successfully!")
-
-            with open(file_path, "r") as file:
-                content = file.read()
-                # print content
-                print("File content:\n", content)
-        else:
-            label1.config(text="Error: selected file is neither a .txt nor .json file!")
+        with open(file_path, "r") as file:
+            content = file.read()
+            # print content
+            print("File content:\n", content)
+        # elif file_path.endswith(".json"):
+        #     # Read and process the .txt file
+        #     label1.config(text="Success: file .json uploaded successfully!")
+        #
+        #     with open(file_path, "r") as file:
+        #         content = file.read()
+        #         # print content
+        #         print("File content:\n", content)
+    else:
+        label1.config(text="Error: No file was provided!")
 
 
 def source_key():
     global key_pub
     file_path = filedialog.askopenfilename(
         title="Select the key.txt file",
-        filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")])  # Specify file types
+        filetypes=[("All Files", "*.*")])  # Specify file types
 
     if file_path:
-        if file_path.endswith(".txt"):
-            # Read and process the .txt file
-            label1.config(text="Success: file .txt uploaded successfully!")
+        # if file_path.endswith(".txt"):
 
-            with open(file_path, "r") as file:
-                key_pub = file.read()
-                # print content
-                print("File content:\n", key)
-        else:
-            label1.config(text="Error: selected file is not a .txt file!")
+        # Read and process the .txt file
+        label1.config(text="Success: key uploaded successfully!")
+
+        with open(file_path, "r") as file:
+            key_pub = file.read()
+            # print content
+            print("File content:\n", key_pub)
+    else:
+        label1.config(text="Error: selected file is not a file!")
 
 
 def hide_option():
@@ -74,17 +75,19 @@ def start():
     global key
     global is_encrypt
 
-    if key is None:
-        key = 0
-
     if clicked0.get() == "ECB" and clicked1.get() == "RES":
-        message, key = ECB.ecb_encrypt(content, is_encrypt, key)
-        message, key = ECB.ecb_decrypt(content, is_encrypt, key)
+
+        if is_encrypt.get():
+            message, key = ECB.ecb_encrypt(content)
+            name_out = "output_encrypt"
+        else:
+            message = ECB.ecb_decrypt(content, key_pub)
+            name_out = "output_decrypt"
 
         print(message)
 
         # Write the result to a new text file in rb format (byte string)
-        with open("output", "w") as output_file:
+        with open(f"{name_out}", "w") as output_file:
             output_file.write(str(message))
             # label1.config(text="Success: result written to output.txt")
 
@@ -116,8 +119,7 @@ if __name__ == '__main__':
 
     global content
     global key_pub
-
-    key = None
+    global key
 
     root = tk.Tk()
     root.title("Crypto 8-bit")
