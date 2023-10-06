@@ -20,7 +20,7 @@ def open_file():
         # Read and process the .txt file
         label1.config(text="Success: file to be encrypted/decrypted uploaded!")
 
-        with open(file_path, "r") as file:
+        with open(file_path, "rb") as file:
             content = file.read()
             # print content
             print("File content:\n", content)
@@ -55,6 +55,7 @@ def source_key():
     else:
         label1.config(text="Error: selected file is not a file!")
 
+
 #ToDO
 def hide_option0():
     global is_sym
@@ -63,6 +64,7 @@ def hide_option0():
         button3.pack_forget()
     else:
         button3.pack(pady=20, before=button5, after=button2)
+
 
 # ToDo
 def hide_option1():
@@ -82,7 +84,7 @@ def start():
     global key
     global is_encrypt
 
-    if clicked0.get() == "ECB" and clicked1.get() == "RES":
+    if clicked0.get() == "ECB" and clicked1.get() == "RSA":
 
         if is_encrypt.get():
             message, key = ecb_encrypt(content)
@@ -94,15 +96,15 @@ def start():
         print(message)
 
         # Write the result to a new text file in rb format (byte string)
-        with open(f"{name_out}", "w") as output_file:
-            output_file.write(str(message))
+        with open(f"{name_out}", "wb") as output_file:
+            output_file.write(message)
             # label1.config(text="Success: result written to output.txt")
 
         with open("key", "w") as output_file:
-            output_file.write(str(key))
+            output_file.write(key)
             label1.config(text="Success: encrypted file written to <output> and key to <key>")
 
-    elif clicked0.get() == "CBC" and clicked1.get() == "RES":
+    elif clicked0.get() == "CBC" and clicked1.get() == "RSA":
         message, key = cbc(content, is_encrypt)
 
         # Write the result to a new text or json file
@@ -110,7 +112,7 @@ def start():
             with open("output", "w") as output_file:
                 output_file.write(message)
 
-            with open("key", "w") as output_file:
+            with open("key", "wb") as output_file:
                 output_file.write(key)
                 label1.config(text="Success: encrypted file written to <output> and key to <key>")
 
@@ -160,8 +162,8 @@ if __name__ == '__main__':
 
     is_sym = tk.BooleanVar()
     is_encrypt = tk.BooleanVar()
-    checkbox0 = tk.Checkbutton(root, text="Checked encrypt. / Unchecked decrypt.", variable=is_encrypt,
-                               command=hide_option0)
+    #checkbox0 = tk.Checkbutton(root, text="Checked encrypt. / Unchecked decrypt.", variable=is_encrypt,
+    #                           command=hide_option0)
     checkbox1 = tk.Checkbutton(root, text="Checked encrypt. / Unchecked decrypt.", variable=is_encrypt,
                                command=hide_option1)
     label0.pack(pady=20)
