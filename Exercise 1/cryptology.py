@@ -1,13 +1,11 @@
 import tkinter as tk
 from tkinter import filedialog
-import functools
 import pygame
 
-import ECB
 from ECB import *
 from CBC import *
 from AES_GCM import *
-from RES import *
+from RSA import *
 
 
 def open_file():
@@ -58,11 +56,20 @@ def source_key():
         label1.config(text="Error: selected file is not a file!")
 
 
-def hide_option():
+def hide_option0():
+    global is_sym
+
+    if is_sym.get():
+        button3.pack_forget()
+    else:
+        button3.pack(pady=20, before=button5, after=button2)
+
+
+def hide_option1():
     if is_encrypt.get():
         button3.pack_forget()
     else:
-        button3.pack(before=button5)
+        button3.pack(pady=20, before=button5, after=button2)
 
 
 # Define an exit event handler to stop the audio
@@ -78,10 +85,10 @@ def start():
     if clicked0.get() == "ECB" and clicked1.get() == "RES":
 
         if is_encrypt.get():
-            message, key = ECB.ecb_encrypt(content)
+            message, key = ecb_encrypt(content)
             name_out = "output_encrypt"
         else:
-            message = ECB.ecb_decrypt(content, key_pub)
+            message = ecb_decrypt(content, key_pub)
             name_out = "output_decrypt"
 
         print(message)
@@ -129,19 +136,19 @@ if __name__ == '__main__':
     title_color = "blue"  # Change the text color
 
     # Adjust size
-    root.geometry("300x450")
+    root.geometry("320x500")
 
     # datatype of menu text
     clicked0 = tk.StringVar()
     clicked1 = tk.StringVar()
 
     # initial menu text
-    clicked0.set("Select Symmetric cypher")
-    clicked1.set("Select Asymmetric cypher")
+    clicked0.set("Select Symmetric cipher")
+    clicked1.set("Select Asymmetric cipher")
 
     # Create Dropdown menu
     drop0 = tk.OptionMenu(root, clicked0, *["ECB", "CBC", "AES-GCM"])
-    drop1 = tk.OptionMenu(root, clicked1, *["RES"])
+    drop1 = tk.OptionMenu(root, clicked1, *["RSA"])
 
     label0 = tk.Label(root, text="Crypto 8-bit", font=title_font, foreground=title_color)
     label1 = tk.Label(root, text="Welcome!", font=11, foreground="red")
@@ -151,18 +158,21 @@ if __name__ == '__main__':
     button4 = tk.Button(root, text="Exit", command=on_closing)
     button5 = tk.Button(root, text="Start", command=start)
 
+    is_sym = tk.BooleanVar()
     is_encrypt = tk.BooleanVar()
     checkbox0 = tk.Checkbutton(root, text="Checked encrypt. / Unchecked decrypt.", variable=is_encrypt,
-                               command=hide_option)
+                               command=hide_option0)
+    checkbox1 = tk.Checkbutton(root, text="Checked encrypt. / Unchecked decrypt.", variable=is_encrypt,
+                               command=hide_option1)
     label0.pack(pady=20)
     drop0.pack(pady=10)
     drop1.pack(pady=10)
-    checkbox0.pack(pady=10)
+    checkbox1.pack(pady=10)
     button2.pack(pady=10)
     button3.pack(pady=20)
     button5.pack(pady=10)
-    button4.pack(pady=20)
-    label1.pack(pady=10)
+    button4.pack()
+    label1.pack(pady=20)
 
     # Bind the exit event handler to the window's close button
     root.protocol("WM_DELETE_WINDOW", on_closing)
