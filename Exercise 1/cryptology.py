@@ -55,7 +55,7 @@ def source_key():
     else:
         label1.config(text="Error: selected file is not a file!")
 
-
+#ToDO
 def hide_option0():
     global is_sym
 
@@ -64,7 +64,7 @@ def hide_option0():
     else:
         button3.pack(pady=20, before=button5, after=button2)
 
-
+# ToDo
 def hide_option1():
     if is_encrypt.get():
         button3.pack_forget()
