@@ -48,7 +48,7 @@ def source_key():
         # Read and process the .txt file
         label3.config(text="Success: key uploaded successfully!")
 
-        with open(file_path, "r") as file:
+        with open(file_path, "rb") as file:
             key_pub = file.read()
             # print content
             print("File content:\n", key_pub)
@@ -101,9 +101,10 @@ def start():
             output_file.write(message)
             # label3.config(text="Success: result written to output.txt")
 
-        with open("key", "w") as output_file:
-            output_file.write(key)
-            label3.config(text="Success: encrypted file written to <output> and key to <key>")
+        if is_encrypt:
+            with open("key", "wb") as output_file:
+                output_file.write(key)
+                label3.config(text="Success: encrypted file written to <output> and key to <key>")
 
     elif clicked0.get() == "CBC":
         message, key = cbc(content, is_encrypt)
@@ -121,7 +122,7 @@ def start():
             with open("output", "w") as output_file:
                 output_file.write(message)
                 label3.config(text="Success: decrypted file written to <output>")
-                
+
     elif clicked0.get() == 'AES-GCM':
         label3.config(text="Selected AES-GCM symmetric cipher")
 
