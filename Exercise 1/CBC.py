@@ -1,54 +1,44 @@
 import json
-from base64 import b64encode, b64decode
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes
+from codificator import *
 
 
-def cbc(message, is_encrypt):
-    # data = b"secret"
+def encrypt_cbc(file):
+    BLOCK_SIZE = 32  # Bytes
+    print("encrypt!")
+    # Encryption
 
     # Key
-    key = get_random_bytes(16)  # 128-bit key
+    key = get_random_bytes(BLOCK_SIZE)  # 256-bit key
 
     # Create an AES cipher object in CBC mode
     cipher = AES.new(key, AES.MODE_CBC)
 
-    if is_encrypt.get():
-        message = encrypt_cbc(message, cipher)
-    else:
-        message = decrypt_cbc(key, message)
+    encrypted_text = cipher.encrypt(pad(file, BLOCK_SIZE))
 
-    return message, key
+    iv_key = encoding64(cipher.iv)
+    ct_key = encoding64(encrypted_text)
 
+    json_output = json.dumps({'iv': iv_key, 'ciphertext': ct_key})
 
-def encrypt_cbc(message, cipher):
-    print("encrypt!")
-    # Encryption
+    print(json_output)
 
-    ct_bytes = cipher.encrypt(pad(message, AES.block_size))
-
-    iv = b64encode(cipher.iv).decode('utf-8')
-    ct = b64encode(ct_bytes).decode('utf-8')
-
-    result = json.dumps({'iv': iv, 'ciphertext': ct})
-
-    print(result)
-
-    return result
+    return json_output, key
 
 
-def decrypt_cbc(key, message_encrypted):
-    try:
-        b64 = json.loads(message_encrypted)
+def decrypt_cbc(json_file, key):
+    BLOCK_SIZE = 32  # Bytes
 
-        iv = b64decode(b64['iv'])
-        ct = b64decode(b64['ciphertext'])
+    json_file = json.loads(json_file)
 
-        decipher = AES.new(key, AES.MODE_CBC, iv)
-        pt = unpad(decipher.decrypt(ct), AES.block_size)
-        print("The message was: ", pt)
-        return pt
+    iv_key = decoding64(json_file['iv'])
+    ct_key = decoding64(json_file['ciphertext'])
 
-    except (ValueError, KeyError):
-        print("Incorrect decryption")
+    decipher = AES.new(key, AES.MODE_CBC, iv_key)
+    decrypted_file = decipher.decrypt(ct_key)
+    decrypted_file = unpad(decrypted_file, BLOCK_SIZE)
+
+    return decrypted_file
+

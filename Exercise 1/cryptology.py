@@ -4,8 +4,8 @@ import pygame
 
 from ECB import *
 from CBC import *
-from AES_GCM import *
-from RSA import *
+from GCM import *
+from RSA_OAEP import *
 
 
 def open_file():
@@ -15,29 +15,29 @@ def open_file():
     file_path = filedialog.askopenfilename(
         title="Select a file", filetypes=[("All Files", "*.*")])  # Specify file types
 
-    if file_path:
-        # if file_path.endswith(".*"):
-        # Read and process the .txt file
-        label3.config(text="Success: file to be encrypted/decrypted uploaded!")
+    if file_path and is_encrypt and not file_path.endswith(".json"):
 
+        label3.config(text="Success: file to be encrypted uploaded!")
         with open(file_path, "rb") as file:
             content = file.read()
             # print content
             print("File content:\n", content)
-        # elif file_path.endswith(".json"):
-        #     # Read and process the .txt file
-        #     label3.config(text="Success: file .json uploaded successfully!")
-        #
-        #     with open(file_path, "r") as file:
-        #         content = file.read()
-        #         # print content
-        #         print("File content:\n", content)
+
+    elif file_path.endswith(".json") and not is_encrypt.get() and (clicked0.get() == "CBC", "GCM"):
+        # Read and process the .txt file
+        label3.config(text="Success: file .json to be decrypted uploaded!")
+
+        with open(file_path, "r") as file:
+            content = file.read()
+            # print content
+            print("File content:\n", content)
     else:
-        label3.config(text="Error: No file was provided!")
+        label3.config(text="Error: No file or wrong format was provided!")
 
 
 def source_key():
-    global key_pub
+    global key
+
     file_path = filedialog.askopenfilename(
         title="Select the key.txt file",
         filetypes=[("All Files", "*.*")])  # Specify file types
@@ -49,9 +49,9 @@ def source_key():
         label3.config(text="Success: key uploaded successfully!")
 
         with open(file_path, "rb") as file:
-            key_pub = file.read()
+            key = file.read()
             # print content
-            print("File content:\n", key_pub)
+            print("File content:\n", key)
     else:
         label3.config(text="Error: selected file is not a file!")
 
@@ -89,10 +89,10 @@ def start():
 
         if is_encrypt.get():
             message, key = ecb_encrypt(content)
-            name_out = "output_encrypt"
+            name_out = "ECB_encrypt"
         else:
-            message = ecb_decrypt(content, key_pub)
-            name_out = "output_decrypt"
+            message = ecb_decrypt(content, key)
+            name_out = "ECB_decrypt"
 
         print(message)
 
@@ -101,36 +101,60 @@ def start():
             output_file.write(message)
             # label3.config(text="Success: result written to output.txt")
 
-        if is_encrypt:
-            with open("key", "wb") as output_file:
+        if is_encrypt.get():
+            with open("ECB_key", "wb") as output_file:
                 output_file.write(key)
-                label3.config(text="Success: encrypted file written to <output> and key to <key>")
+                label3.config(text=f"Success: encrypted file written to <{name_out}> and key to <ECB_key>")
 
     elif clicked0.get() == "CBC":
-        message, key = cbc(content, is_encrypt)
+        if is_encrypt.get():
+            message, key = encrypt_cbc(content)
+            name_out = "CBC_encrypt"
+        else:
+            message = decrypt_cbc(content, key)
+            name_out = "CBC_decrypt"
 
         # Write the result to a new text or json file
-        if is_encrypt:
-            with open("output", "w") as output_file:
+        if is_encrypt.get():
+            with open(f"{name_out}.json", "w") as output_file:
                 output_file.write(message)
 
-            with open("key", "wb") as output_file:
+            with open("CBC_key", "wb") as output_file:
                 output_file.write(key)
-                label3.config(text="Success: encrypted file written to <output> and key to <key>")
+                label3.config(text=f"Success: encrypted file written to <{name_out}> and key to <CBC_key>")
 
         else:
-            with open("output", "w") as output_file:
+            with open(f"{name_out}", "wb") as output_file:
                 output_file.write(message)
-                label3.config(text="Success: decrypted file written to <output>")
+                label3.config(text=f"Success: decrypted file written to <{name_out}>")
 
-    elif clicked0.get() == 'AES-GCM':
-        label3.config(text="Selected AES-GCM symmetric cipher")
+    elif clicked0.get() == 'GCM':
+        if is_encrypt.get():
+            message, key = GCM_encryption(content)
+            name_out = "GCM_encrypt"
+        else:
+            message = GCM_decryption(content, key)
+            name_out = "GCM_decrypt"
 
-    elif clicked1.get() == 'RSA':
-        label3.config(text="Selected RSA asymmetric cipher")
+        # Write the result to a new text or json file
+        if is_encrypt.get():
+            with open(f"{name_out}.json", "w") as output_file:
+                output_file.write(message)
+
+            with open("GCM_key", "wb") as output_file:
+                output_file.write(key)
+                label3.config(text=f"Success: encrypted file written to <{name_out}> and key to <GCM_key>")
+
+        else:
+            with open(f"{name_out}", "wb") as output_file:
+                output_file.write(message)
+                label3.config(text=f"Success: decrypted file written to <{name_out}>")
+
+    elif clicked1.get() == 'RSA-OAEP':
+        label3.config(text="Selected RSA-OAEP asymmetric cipher")
 
     else:
-        if is_sym:
+        if is_sym.get():
             label3.config(text="Select a cipher and/or upload the file before proceeding!")
         else:
             label3.config(text="Select a cipher and/or upload the encrypted file + key before proceeding!")
@@ -141,7 +165,6 @@ if __name__ == '__main__':
     pygame.mixer.init()
 
     global content
-    global key_pub
     global key
 
     root = tk.Tk()
@@ -159,8 +182,8 @@ if __name__ == '__main__':
     clicked1.set("Select Asymmetric cipher")
 
     # Create Dropdown menu
-    drop0 = tk.OptionMenu(root, clicked0, *["Select Symmetric cipher", "ECB", "CBC", "AES-GCM"])
-    drop1 = tk.OptionMenu(root, clicked1, *["Select Asymmetric cipher", "RSA"])
+    drop0 = tk.OptionMenu(root, clicked0, *["Select Symmetric cipher", "ECB", "CBC", "GCM"])
+    drop1 = tk.OptionMenu(root, clicked1, *["Select Asymmetric cipher", "RSA-OAEP"])
 
     label0 = tk.Label(root, text="Crypto 8-bit", font=("Helvetica", 24, "bold"), foreground="blue")
     label1 = tk.Label(root, text="Create your own key:", font=("Helvetica", 14, "bold"), foreground="black")
