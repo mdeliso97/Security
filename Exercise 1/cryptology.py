@@ -1,10 +1,10 @@
 import tkinter as tk
-from tkinter import filedialog
 import pygame
 
+from tkinter import filedialog
+from RSA_keygen import *
 from ECB import *
 from CBC import *
-from GCM import *
 from RSA_OAEP import *
 
 
@@ -23,7 +23,7 @@ def open_file():
             # print content
             print("File content:\n", content)
 
-    elif file_path.endswith(".json") and not is_encrypt.get() and (clicked0.get() == "CBC", "GCM"):
+    elif file_path.endswith(".json") and not is_encrypt.get() and (clicked_sym.get() == "CBC", "GCM", "RSA-OAEP"):
         # Read and process the .txt file
         label3.config(text="Success: file .json to be decrypted uploaded!")
 
@@ -56,22 +56,82 @@ def source_key():
         label3.config(text="Error: selected file is not a file!")
 
 
-def hide_option0():
+def source_public_key():
+    global key_public
+
+    file_path = filedialog.askopenfilename(
+        title="Select the key.txt file",
+        filetypes=[("All Files", "*.*")])  # Specify file types
+
+    if file_path:
+        # if file_path.endswith(".txt"):
+
+        # Read and process the .txt file
+        label3.config(text="Success: key uploaded successfully!")
+
+        with open(file_path, "rb") as file:
+            key_public = file.read()
+            # print content
+            print("File content:\n", key)
+    else:
+        label3.config(text="Error: selected file is not a file!")
+
+
+def source_private_key():
+    global key_private
+
+    file_path = filedialog.askopenfilename(
+        title="Select the key file",
+        filetypes=[("All Files", "*.*")])  # Specify file types
+
+    if file_path:
+        # if file_path.endswith(".txt"):
+
+        with open(file_path, "rb") as file:
+            key_private = file.read()
+            # print content
+            print("File content:\n", key)
+
+        # Read and process the .txt file
+        label3.config(text="Success: private key uploaded successfully!")
+
+    else:
+        label3.config(text="Error: selected file is not a file!")
+
+
+def hide_option():
     global is_sym
+    global is_encrypt
 
-    if is_sym.get():
-        drop1.pack_forget()
-        drop0.pack(pady=10, after=checkbox1)
-    else:
-        drop0.pack_forget()
-        drop1.pack(pady=10, after=checkbox1)
-
-
-def hide_option1():
-    if is_encrypt.get():
-        button3.pack_forget()
-    else:
-        button3.pack(pady=20, before=button5, after=button2)
+    if is_encrypt.get() and is_sym.get():
+        button_public.pack_forget()
+        button_private.pack_forget()
+        button_key.pack_forget()
+        button_keygen.pack_forget()
+        drop_asym.pack_forget()
+        drop_sym.pack(pady=10, after=checkbox_encryption)
+    elif not is_encrypt.get() and is_sym.get():
+        button_public.pack_forget()
+        button_private.pack_forget()
+        button_key.pack(pady=5, after=button_file)
+        button_keygen.pack_forget()
+        drop_asym.pack_forget()
+        drop_sym.pack(pady=10, after=checkbox_encryption)
+    elif is_encrypt.get() and not is_sym.get():
+        button_private.pack_forget()
+        button_key.pack_forget()
+        drop_sym.pack_forget()
+        button_keygen.pack_forget()
+        drop_asym.pack(pady=10, after=checkbox_encryption)
+        button_keygen.pack(pady=10, before=drop_asym)
+        button_public.pack(pady=5, after=button_file)
+    elif not is_encrypt.get() and not is_sym.get():
+        button_public.pack_forget()
+        drop_sym.pack_forget()
+        drop_asym.pack(pady=10, after=checkbox_encryption)
+        button_keygen.pack(pady=10, before=drop_asym)
+        button_key.pack(pady=5, after=button_file)
+        button_private.pack(pady=5, after=button_key)
 
 
 # Define an exit event handler to stop the audio
@@ -80,12 +140,22 @@ def on_closing():
     root.destroy()
 
 
+def keygen_output(json_output_public, json_output_private):
+    with open("public_key.json", "w") as output_file:
+        output_file.write(json_output_public)
+
+    with open("private_key.json", "w") as output_file:
+        output_file.write(json_output_private)
+
+    label3.config(text=f"Success: public and private keys generated!")
+
+
 def start():
     global key
     global is_encrypt
     global is_sym
 
-    if clicked0.get() == "ECB":
+    if clicked_sym.get() == "ECB":
 
         if is_encrypt.get():
             message, key = ecb_encrypt(content)
@@ -106,7 +176,7 @@ def start():
                 output_file.write(key)
                 label3.config(text=f"Success: encrypted file written to <{name_out}> and key to <ECB_key>")
 
-    elif clicked0.get() == "CBC":
+    elif clicked_sym.get() == "CBC":
         if is_encrypt.get():
             message, key = encrypt_cbc(content)
             name_out = "CBC_encrypt"
@@ -128,7 +198,7 @@ def start():
                 output_file.write(message)
                 label3.config(text=f"Success: decrypted file written to <{name_out}>")
 
-    elif clicked0.get() == 'GCM':
+    elif clicked_sym.get() == 'GCM':
         if is_encrypt.get():
             message, key = GCM_encryption(content)
             name_out = "GCM_encrypt"
@@ -150,11 +220,12 @@ def start():
                 output_file.write(message)
                 label3.config(text=f"Success: decrypted file written to <{name_out}>")
 
-    elif clicked1.get() == 'RSA-OAEP':
+    elif clicked_asym.get() == 'RSA-OAEP':
+
         label3.config(text="Selected RSA-OAEP asymmetric cipher")
 
     else:
-        if is_sym.get():
+        if is_sym.get() and is_encrypt.get():
             label3.config(text="Select a cipher and/or upload the file before proceeding!")
         else:
             label3.config(text="Select a cipher and/or upload the encrypted file + key before proceeding!")
@@ -164,6 +235,8 @@ if __name__ == '__main__':
     # Initialize pygame
     pygame.mixer.init()
 
+    global key_public
+    global key_private
     global content
     global key
 
@@ -174,42 +247,46 @@ if __name__ == '__main__':
     root.geometry("320x500")
 
     # datatype of menu text
-    clicked0 = tk.StringVar()
-    clicked1 = tk.StringVar()
+    clicked_sym = tk.StringVar()
+    clicked_asym = tk.StringVar()
 
     # initial menu text
-    clicked0.set("Select Symmetric cipher")
-    clicked1.set("Select Asymmetric cipher")
+    clicked_sym.set("Select Symmetric cipher")
+    clicked_asym.set("Select Asymmetric cipher")
 
     # Create Dropdown menu
-    drop0 = tk.OptionMenu(root, clicked0, *["Select Symmetric cipher", "ECB", "CBC", "GCM"])
-    drop1 = tk.OptionMenu(root, clicked1, *["Select Asymmetric cipher", "RSA-OAEP"])
+    drop_sym = tk.OptionMenu(root, clicked_sym, *["Select Symmetric cipher", "ECB", "CBC", "GCM"])
+    drop_asym = tk.OptionMenu(root, clicked_asym, *["Select Asymmetric cipher", "RSA-OAEP"])
 
     label0 = tk.Label(root, text="Crypto 8-bit", font=("Helvetica", 24, "bold"), foreground="blue")
     label1 = tk.Label(root, text="Create your own key:", font=("Helvetica", 14, "bold"), foreground="black")
     label2 = tk.Label(root, text="TBD", font=("Helvetica", 14, "bold"), foreground="black")
     label3 = tk.Label(root, text="Welcome!", font=9, foreground="red")
 
-    button2 = tk.Button(root, text="Source File", command=open_file)
-    button3 = tk.Button(root, text="Source Key", command=source_key)
-    button4 = tk.Button(root, text="Exit", command=on_closing)
-    button5 = tk.Button(root, text="Start", command=start)
+    button_file = tk.Button(root, text="Source File", command=open_file)
+    button_key = tk.Button(root, text="Source Key", command=source_key)
+    button_exit = tk.Button(root, text="Exit", command=on_closing)
+    button_start = tk.Button(root, text="Start", command=start)
+    button_public = tk.Button(root, text="Source Public Key", command=source_key)
+    button_private = tk.Button(root, text="Source Private Key", command=source_private_key)
+    button_keygen = tk.Button(root, text="Keygen", command=keygen)
 
     is_sym = tk.BooleanVar()
     is_encrypt = tk.BooleanVar()
-    checkbox0 = tk.Checkbutton(root, text="Checked sym. / Unchecked asym.", variable=is_sym,
-                               command=hide_option0)
-    checkbox1 = tk.Checkbutton(root, text="Checked encrypt. / Unchecked decrypt.", variable=is_encrypt,
-                               command=hide_option1)
+    checkbox_symmetric = tk.Checkbutton(root, text="Checked sym. / Unchecked asym.", variable=is_sym,
+                                        command=hide_option)
+    checkbox_encryption = tk.Checkbutton(root, text="Checked encrypt. / Unchecked decrypt.", variable=is_encrypt,
+                                         command=hide_option)
     label0.pack(pady=30)
-    checkbox0.pack(pady=0)
-    checkbox1.pack(pady=10)
-    # drop0.pack(pady=10)
-    drop1.pack(pady=10)
-    button2.pack(pady=10)
-    button3.pack(pady=20)
-    button5.pack(pady=10)
-    button4.pack()
+    checkbox_symmetric.pack(pady=0)
+    checkbox_encryption.pack(pady=0)
+    button_keygen.pack(pady=10)
+    drop_asym.pack(pady=10)
+    button_file.pack(pady=5)
+    button_key.pack(pady=5)
+    button_private.pack(pady=5)
+    button_start.pack(pady=10)
+    button_exit.pack()
     label3.pack(pady=20)
 
     # Bind the exit event handler to the window's close button

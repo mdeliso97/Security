@@ -2,10 +2,8 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
 from Crypto.Util.Padding import unpad
 from Crypto.Random import get_random_bytes
-from codificator import *
 
 
-# ToDo: key + message bytes
 def ecb_encrypt(file):
     BLOCK_SIZE = 32  # Bytes
 

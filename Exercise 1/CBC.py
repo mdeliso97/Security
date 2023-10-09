@@ -7,11 +7,9 @@ from codificator import *
 
 def encrypt_cbc(file):
     BLOCK_SIZE = 32  # Bytes
-    print("encrypt!")
-    # Encryption
 
-    # Key
-    key = get_random_bytes(BLOCK_SIZE)  # 256-bit key
+    # Generate random 256-bit key
+    key = get_random_bytes(BLOCK_SIZE)
 
     # Create an AES cipher object in CBC mode
     cipher = AES.new(key, AES.MODE_CBC)
