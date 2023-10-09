@@ -1,8 +1,11 @@
 import json
 import random
 import math
+
+from Crypto.Random import get_random_bytes
 from Crypto.Util import number
 from cryptology import keygen_output
+from Crypto.Util.number import getPrime
 
 # 1. Select two large prime numbers, p and q.
 # 2. Calculate the modulus n = p * q.
@@ -13,6 +16,7 @@ from cryptology import keygen_output
 
 
 def primes_gen(bits):
+
     p = number.getPrime(bits)
     q = number.getPrime(bits)
     return p, q
@@ -29,6 +33,7 @@ def keygen():
     # calculate Euler's Totient function
     phi = (p - 1) * (q - 1)
 
+    # ToDo: fix e
     # generate exponent e
     e = 0
 

@@ -147,8 +147,6 @@ def keygen_output(json_output_public, json_output_private):
     with open("private_key.json", "w") as output_file:
         output_file.write(json_output_private)
 
-    label3.config(text=f"Success: public and private keys generated!")
-
 
 def start():
     global key
@@ -221,8 +219,28 @@ def start():
                 label3.config(text=f"Success: decrypted file written to <{name_out}>")
 
     elif clicked_asym.get() == 'RSA-OAEP':
+        if not is_sym.get():
+            if is_encrypt.get():
+                message, key = rsa_oaep_encryption(content, key_public)
+                name_out = "RSA-OAEP_encrypt"
+            else:
+                message = rsa_oaep_decryption(content, key, key_private)
+                name_out = "RSA-OAEP_decrypt"
 
-        label3.config(text="Selected RSA-OAEP asymmetric cipher")
+            # Write the result to a new text or json file
+            if is_encrypt.get():
+                with open(f"{name_out}.json", "w") as output_file:
+                    output_file.write(message)
+
+                with open("RSA_key", "wb") as output_file:
+                    output_file.write(key)
+                    label3.config(
+                        text=f"Success: encrypted file written to <{name_out}> and encrypted key to <RSA_key>")
+
+            else:
+                with open(f"{name_out}", "wb") as output_file:
+                    output_file.write(message)
+                    label3.config(text=f"Success: decrypted file written to <{name_out}>")
 
     else:
         if is_sym.get() and is_encrypt.get():
