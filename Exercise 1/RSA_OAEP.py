@@ -2,7 +2,6 @@ from GCM import *
 
 
 def rsa_oaep_encryption(file, json_pub):
-
     # Retrieve GCM AEAD cipher's outputs
     json_output, key = GCM_encryption(file)
 
@@ -10,8 +9,9 @@ def rsa_oaep_encryption(file, json_pub):
     json_pub = json.loads(json_pub)
 
     nonce_key = decoding64(json_file['nonce'])
-    pub_key = json.loads(json_pub['public'])
+    pub_key = decoding64(json_pub['public'])
 
+    # ToDo:
     cipher = AES.new(pub_key, AES.MODE_GCM, nonce=nonce_key)
 
     key_encrypt = cipher.encrypt_and_digest(key)
@@ -20,7 +20,6 @@ def rsa_oaep_encryption(file, json_pub):
 
 
 def rsa_oaep_decryption(json_file, key_encrypt, key_private):
-
     json_file = json.loads(json_file)
 
     nonce_key = decoding64(json_file['nonce'])

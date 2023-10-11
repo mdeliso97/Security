@@ -63,18 +63,18 @@ def source_public_key():
         title="Select the key.txt file",
         filetypes=[("All Files", "*.*")])  # Specify file types
 
-    if file_path:
+    if file_path and file_path.endswith(".json"):
         # if file_path.endswith(".txt"):
 
         # Read and process the .txt file
         label3.config(text="Success: key uploaded successfully!")
 
-        with open(file_path, "rb") as file:
+        with open(file_path, "r") as file:
             key_public = file.read()
             # print content
-            print("File content:\n", key)
+            print("File content:\n", key_public)
     else:
-        label3.config(text="Error: selected file is not a file!")
+        label3.config(text="Error: selected file is not a .json file!")
 
 
 def source_private_key():
@@ -84,19 +84,18 @@ def source_private_key():
         title="Select the key file",
         filetypes=[("All Files", "*.*")])  # Specify file types
 
-    if file_path:
-        # if file_path.endswith(".txt"):
+    if file_path and file_path.endswith(".json"):
 
-        with open(file_path, "rb") as file:
+        with open(file_path, "r") as file:
             key_private = file.read()
             # print content
-            print("File content:\n", key)
+            print("File content:\n", key_private)
 
         # Read and process the .txt file
         label3.config(text="Success: private key uploaded successfully!")
 
     else:
-        label3.config(text="Error: selected file is not a file!")
+        label3.config(text="Error: selected file is not a .json file!")
 
 
 def hide_option():
@@ -152,8 +151,9 @@ def start():
     global key
     global is_encrypt
     global is_sym
+    global key_public
 
-    if clicked_sym.get() == "ECB":
+    if clicked_sym.get() == "ECB" and clicked_asym.get() == "Select Asymmetric cipher":
 
         if is_encrypt.get():
             message, key = ecb_encrypt(content)
@@ -174,7 +174,7 @@ def start():
                 output_file.write(key)
                 label3.config(text=f"Success: encrypted file written to <{name_out}> and key to <ECB_key>")
 
-    elif clicked_sym.get() == "CBC":
+    elif clicked_sym.get() == "CBC" and clicked_asym.get() == "Select Asymmetric cipher":
         if is_encrypt.get():
             message, key = encrypt_cbc(content)
             name_out = "CBC_encrypt"
@@ -196,7 +196,7 @@ def start():
                 output_file.write(message)
                 label3.config(text=f"Success: decrypted file written to <{name_out}>")
 
-    elif clicked_sym.get() == 'GCM':
+    elif clicked_sym.get() == 'GCM' and clicked_asym.get() == "Select Asymmetric cipher":
         if is_encrypt.get():
             message, key = GCM_encryption(content)
             name_out = "GCM_encrypt"
@@ -285,7 +285,7 @@ if __name__ == '__main__':
     button_key = tk.Button(root, text="Source Key", command=source_key)
     button_exit = tk.Button(root, text="Exit", command=on_closing)
     button_start = tk.Button(root, text="Start", command=start)
-    button_public = tk.Button(root, text="Source Public Key", command=source_key)
+    button_public = tk.Button(root, text="Source Public Key", command=source_public_key)
     button_private = tk.Button(root, text="Source Private Key", command=source_private_key)
     button_keygen = tk.Button(root, text="Keygen", command=keygen)
 
