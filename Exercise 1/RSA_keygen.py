@@ -32,10 +32,10 @@ def is_prime(n):
     return True
 
 
-def primes_gen(bits):
+def primes_gen(length):
 
-    p = number.getPrime(bits)
-    q = number.getPrime(bits)
+    p = number.getPrime(length)
+    q = number.getPrime(length)
     return p, q
 
 
@@ -53,8 +53,9 @@ def keygen():
     # generate exponent e
     e = 0
 
+    # Put fix key e
     while e < 2 or math.gcd(e, phi) != 1 or not is_prime(e):
-        e = random.randint(2, 1000000)
+        e = random.randint(100, 1000000)
 
     # generate d
     d = inverse(e, phi)

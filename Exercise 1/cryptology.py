@@ -7,6 +7,13 @@ from ECB import *
 from CBC import *
 from RSA_OAEP import *
 
+# Questions:
+# - Keygen by hand, I finally get an INTEGER, do I have to convert it into bytes? If I do this I get a missmatch of length
+# - OAEP difficult? Takes time to implement?
+# - In the formula is the public key not used
+# - AEAD ciphers do also output extra parameters, such as tag and nonce for GCM, what to do with these?
+# - Need to consider certain conversions when generating an integer (keygen)
+
 
 def open_file():
     global content
@@ -198,10 +205,10 @@ def start():
 
     elif clicked_sym.get() == 'GCM' and clicked_asym.get() == "Select Asymmetric cipher":
         if is_encrypt.get():
-            message, key = GCM_encryption(content)
+            message, key = gcm_encryption(content)
             name_out = "GCM_encrypt"
         else:
-            message = GCM_decryption(content, key)
+            message = gcm_decryption(content, key)
             name_out = "GCM_decrypt"
 
         # Write the result to a new text or json file

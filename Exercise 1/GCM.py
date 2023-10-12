@@ -4,7 +4,7 @@ from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 
 
-def GCM_encryption(file):
+def gcm_encryption(file):
     # Generate a random 256-bit key
     key = get_random_bytes(32)
 
@@ -26,7 +26,7 @@ def GCM_encryption(file):
     return json_output, key
 
 
-def GCM_decryption(json_file, key):
+def gcm_decryption(json_file, key):
     # Extract nonce, tag and encrypted file
     json_file = json.loads(json_file)
 

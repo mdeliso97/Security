@@ -14,5 +14,6 @@ def decoding64(transform):
     if isinstance(transform, str):
         return base64.decodebytes(transform.encode("ascii"))
 
+    # convert to 32-bytes (= 256-bit) in Little-Endian mode
     elif isinstance(transform, int):
-        return transform.to_bytes((transform.bit_length() + 7) // 8, 'big')
+        return transform.to_bytes(32, byteorder='little')
