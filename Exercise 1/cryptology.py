@@ -6,6 +6,7 @@ from RSA_keygen import *
 from ECB import *
 from CBC import *
 from RSA_OAEP import *
+from RSA import *
 
 
 def widget_console(new_text):
@@ -224,7 +225,30 @@ def start():
                 output_file.write(message)
                 widget_console(f"Success: decrypted file written to <{name_out}>")
 
-    elif clicked_asym.get() == 'RSA-OAEP':
+    elif clicked_asym.get() == 'RSA' and clicked_sym.get() == 'GCM':
+        if not is_sym.get():
+            if is_encrypt.get():
+                message, key = rsa_encryption(content, key_public)
+                name_out = "RSA_encrypt"
+            else:
+                message = rsa_decryption(content, key, key_private)
+                name_out = "RSA_decrypt"
+
+            # Write the result to a new text or json file
+            if is_encrypt.get():
+                with open(f"{name_out}.json", "w") as output_file:
+                    output_file.write(message)
+
+                with open("RSA_key", "w") as output_file:
+                    output_file.write(str(key))
+                    widget_console(f"Success: encrypted file written to <{name_out}> and encrypted key to <RSA_key>")
+
+            else:
+                with open(f"{name_out}", "wb") as output_file:
+                    output_file.write(message)
+                    widget_console(f"Success: decrypted file written to <{name_out}>")
+
+    elif clicked_asym.get() == 'RSA-OAEP' and clicked_sym.get() == 'GCM':
         if not is_sym.get():
             if is_encrypt.get():
                 message, key = rsa_oaep_encryption(content, key_public)
@@ -240,7 +264,7 @@ def start():
 
                 with open("RSA_key", "w") as output_file:
                     output_file.write(str(key))
-                    widget_console(f"Success: encrypted file written to <{name_out}> and encrypted key to <RSA_key>")
+                    widget_console(f"Success: encrypted file written to <{name_out}> and encrypted key to <RSA-OAEP_key>")
 
             else:
                 with open(f"{name_out}", "wb") as output_file:
@@ -280,7 +304,7 @@ if __name__ == '__main__':
 
     # Create Dropdown menu
     drop_sym = tk.OptionMenu(root, clicked_sym, *["Select Symmetric cipher", "ECB", "CBC", "GCM"])
-    drop_asym = tk.OptionMenu(root, clicked_asym, *["Select Asymmetric cipher", "RSA-OAEP"])
+    drop_asym = tk.OptionMenu(root, clicked_asym, *["Select Asymmetric cipher", "RSA", "RSA-OAEP"])
 
     label0 = tk.Label(root, text="Crypto 8-bit", font=("Helvetica", 24, "bold"), foreground="blue")
     label1 = tk.Label(root, text="Create your own key:", font=("Helvetica", 14, "bold"), foreground="black")
