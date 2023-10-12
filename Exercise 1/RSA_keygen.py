@@ -42,7 +42,7 @@ def primes_gen(length):
 def keygen():
 
     # generate two big prime numbers of 2048-bit length
-    p, q = primes_gen(256)
+    p, q = primes_gen(3000)
 
     # calculate modulus n
     n = p * q
@@ -51,23 +51,27 @@ def keygen():
     phi = (p - 1) * (q - 1)
 
     # generate exponent e
+    # e = 65537
     e = 0
 
-    # Put fix key e
-    while e < 2 or math.gcd(e, phi) != 1 or not is_prime(e):
-        e = random.randint(100, 1000000)
+    while math.gcd(e, phi) != 1 or not is_prime(e):
+       e = number.getPrime(7)
 
     # generate d
     d = inverse(e, phi)
 
-    # ToDo
-    n_key = decoding64(n)
-    public_key = decoding64(e)
-    private_key = decoding64(d)
+    n_key = n
+    public_key = e
+    private_key = d
 
-    n_key = encoding64(n_key)
-    public_key = encoding64(public_key)
-    private_key = encoding64(private_key)
+    # ToDo
+    # n_key = decoding64(n)
+    # public_key = decoding64(e)
+    # private_key = decoding64(d)
+
+    # n_key = encoding64(n_key)
+    # public_key = encoding64(public_key)
+    # private_key = encoding64(private_key)
 
     json_output_public = json.dumps({'n': n_key, 'public': public_key})
     json_output_private = json.dumps({'n': n_key, 'private': private_key})

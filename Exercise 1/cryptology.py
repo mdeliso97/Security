@@ -7,12 +7,12 @@ from ECB import *
 from CBC import *
 from RSA_OAEP import *
 
-# Questions:
-# - Keygen by hand, I finally get an INTEGER, do I have to convert it into bytes? If I do this I get a missmatch of length
-# - OAEP difficult? Takes time to implement?
-# - In the formula is the public key not used
-# - AEAD ciphers do also output extra parameters, such as tag and nonce for GCM, what to do with these?
-# - Need to consider certain conversions when generating an integer (keygen)
+
+def widget_console(new_text):
+    text_widget.config(state=tk.NORMAL)
+    text_widget.delete(1.0, "end-1c")
+    text_widget.insert("1.0", new_text)
+    text_widget.config(state=tk.DISABLED)
 
 
 def open_file():
@@ -23,8 +23,8 @@ def open_file():
         title="Select a file", filetypes=[("All Files", "*.*")])  # Specify file types
 
     if file_path and is_encrypt and not file_path.endswith(".json"):
+        widget_console("Success: file to be encrypted uploaded!")
 
-        label3.config(text="Success: file to be encrypted uploaded!")
         with open(file_path, "rb") as file:
             content = file.read()
             # print content
@@ -32,14 +32,14 @@ def open_file():
 
     elif file_path.endswith(".json") and not is_encrypt.get() and (clicked_sym.get() == "CBC", "GCM", "RSA-OAEP"):
         # Read and process the .txt file
-        label3.config(text="Success: file .json to be decrypted uploaded!")
+        widget_console("Success: file .json to be decrypted uploaded!")
 
         with open(file_path, "r") as file:
             content = file.read()
             # print content
             print("File content:\n", content)
     else:
-        label3.config(text="Error: No file or wrong format was provided!")
+        widget_console("Error: No file or wrong format was provided!")
 
 
 def source_key():
@@ -53,14 +53,14 @@ def source_key():
         # if file_path.endswith(".txt"):
 
         # Read and process the .txt file
-        label3.config(text="Success: key uploaded successfully!")
+        widget_console("Success: key uploaded successfully!")
 
         with open(file_path, "rb") as file:
             key = file.read()
             # print content
             print("File content:\n", key)
     else:
-        label3.config(text="Error: selected file is not a file!")
+        widget_console("Error: selected file is not a file!")
 
 
 def source_public_key():
@@ -71,17 +71,16 @@ def source_public_key():
         filetypes=[("All Files", "*.*")])  # Specify file types
 
     if file_path and file_path.endswith(".json"):
-        # if file_path.endswith(".txt"):
 
         # Read and process the .txt file
-        label3.config(text="Success: key uploaded successfully!")
+        widget_console("Success: key uploaded successfully!")
 
         with open(file_path, "r") as file:
             key_public = file.read()
             # print content
             print("File content:\n", key_public)
     else:
-        label3.config(text="Error: selected file is not a .json file!")
+        widget_console("Error: selected file is not a .json file!")
 
 
 def source_private_key():
@@ -99,10 +98,10 @@ def source_private_key():
             print("File content:\n", key_private)
 
         # Read and process the .txt file
-        label3.config(text="Success: private key uploaded successfully!")
+        widget_console("Success: private key uploaded successfully!")
 
     else:
-        label3.config(text="Error: selected file is not a .json file!")
+        widget_console("Error: selected file is not a .json file!")
 
 
 def hide_option():
@@ -179,7 +178,7 @@ def start():
         if is_encrypt.get():
             with open("ECB_key", "wb") as output_file:
                 output_file.write(key)
-                label3.config(text=f"Success: encrypted file written to <{name_out}> and key to <ECB_key>")
+                widget_console(f"Success: encrypted file written to <{name_out}> and key to <ECB_key>")
 
     elif clicked_sym.get() == "CBC" and clicked_asym.get() == "Select Asymmetric cipher":
         if is_encrypt.get():
@@ -196,12 +195,12 @@ def start():
 
             with open("CBC_key", "wb") as output_file:
                 output_file.write(key)
-                label3.config(text=f"Success: encrypted file written to <{name_out}> and key to <CBC_key>")
+                widget_console(f"Success: encrypted file written to <{name_out}> and key to <CBC_key>")
 
         else:
             with open(f"{name_out}", "wb") as output_file:
                 output_file.write(message)
-                label3.config(text=f"Success: decrypted file written to <{name_out}>")
+                widget_console(f"Success: decrypted file written to <{name_out}>")
 
     elif clicked_sym.get() == 'GCM' and clicked_asym.get() == "Select Asymmetric cipher":
         if is_encrypt.get():
@@ -218,12 +217,12 @@ def start():
 
             with open("GCM_key", "wb") as output_file:
                 output_file.write(key)
-                label3.config(text=f"Success: encrypted file written to <{name_out}> and key to <GCM_key>")
+                widget_console(f"Success: encrypted file written to <{name_out}> and key to <GCM_key>")
 
         else:
             with open(f"{name_out}", "wb") as output_file:
                 output_file.write(message)
-                label3.config(text=f"Success: decrypted file written to <{name_out}>")
+                widget_console(f"Success: decrypted file written to <{name_out}>")
 
     elif clicked_asym.get() == 'RSA-OAEP':
         if not is_sym.get():
@@ -239,21 +238,21 @@ def start():
                 with open(f"{name_out}.json", "w") as output_file:
                     output_file.write(message)
 
-                with open("RSA_key", "wb") as output_file:
-                    output_file.write(key)
-                    label3.config(
-                        text=f"Success: encrypted file written to <{name_out}> and encrypted key to <RSA_key>")
+                with open("RSA_key", "w") as output_file:
+                    output_file.write(str(key))
+                    widget_console(f"Success: encrypted file written to <{name_out}> and encrypted key to <RSA_key>")
 
             else:
                 with open(f"{name_out}", "wb") as output_file:
                     output_file.write(message)
-                    label3.config(text=f"Success: decrypted file written to <{name_out}>")
+                    widget_console(f"Success: decrypted file written to <{name_out}>")
 
     else:
         if is_sym.get() and is_encrypt.get():
-            label3.config(text="Select a cipher and/or upload the file before proceeding!")
+            widget_console("Select a cipher and/or upload the file before proceeding!")
+
         else:
-            label3.config(text="Select a cipher and/or upload the encrypted file + key before proceeding!")
+            widget_console("Select a cipher and/or upload the encrypted file + key before proceeding!")
 
 
 if __name__ == '__main__':
@@ -269,7 +268,7 @@ if __name__ == '__main__':
     root.title("Crypto 8-bit")
 
     # Adjust size
-    root.geometry("320x500")
+    root.geometry("320x550")
 
     # datatype of menu text
     clicked_sym = tk.StringVar()
@@ -286,7 +285,6 @@ if __name__ == '__main__':
     label0 = tk.Label(root, text="Crypto 8-bit", font=("Helvetica", 24, "bold"), foreground="blue")
     label1 = tk.Label(root, text="Create your own key:", font=("Helvetica", 14, "bold"), foreground="black")
     label2 = tk.Label(root, text="TBD", font=("Helvetica", 14, "bold"), foreground="black")
-    label3 = tk.Label(root, text="Welcome!", font=9, foreground="red")
 
     button_file = tk.Button(root, text="Source File", command=open_file)
     button_key = tk.Button(root, text="Source Key", command=source_key)
@@ -295,6 +293,10 @@ if __name__ == '__main__':
     button_public = tk.Button(root, text="Source Public Key", command=source_public_key)
     button_private = tk.Button(root, text="Source Private Key", command=source_private_key)
     button_keygen = tk.Button(root, text="Keygen", command=keygen)
+
+    text_widget = tk.Text(root, height=6, width=30, foreground="red")
+    text_widget.insert("1.0", "Welcome to Crypto 8-bit!")
+    text_widget.config(state=tk.DISABLED)
 
     is_sym = tk.BooleanVar()
     is_encrypt = tk.BooleanVar()
@@ -312,7 +314,7 @@ if __name__ == '__main__':
     button_private.pack(pady=5)
     button_start.pack(pady=10)
     button_exit.pack()
-    label3.pack(pady=20)
+    text_widget.pack(pady=20)
 
     # Bind the exit event handler to the window's close button
     root.protocol("WM_DELETE_WINDOW", on_closing)
