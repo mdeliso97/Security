@@ -5,7 +5,6 @@ import math
 from Crypto.Util import number
 from Crypto.Util.number import inverse
 from cryptology import keygen_output
-from codificator import encoding64, decoding64
 
 '''
 1. Select two large prime numbers, p and q.
@@ -15,23 +14,6 @@ from codificator import encoding64, decoding64
 5. Calculate the private exponent d such that d * e ≡ 1 (mod phi(n)).
 6. The public key is (n, e) and the private key is (n, d).
 '''
-
-
-def is_prime(n):
-    if n <= 1:
-        return False
-    if n <= 3:
-        return True
-    if n % 2 == 0 or n % 3 == 0:
-        return False
-
-    i = 5
-    while i * i <= n:
-        if n % i == 0 or n % (i + 2) == 0:
-            return False
-        i += 6
-
-    return True
 
 
 def primes_gen(length):
@@ -50,6 +32,8 @@ def keygen():
     # calculate modulus n
     n = p * q
 
+    print(len(str(n)))
+
     # calculate Euler's Totient function
     phi = (p - 1) * (q - 1)
 
@@ -57,7 +41,7 @@ def keygen():
     # e = 65537
     e = 0
 
-    while math.gcd(e, phi) != 1 or not is_prime(e):
+    while math.gcd(e, phi) != 1:
         e = number.getPrime(50)
 
     # generate d
