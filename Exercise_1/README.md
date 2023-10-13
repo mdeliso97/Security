@@ -25,7 +25,7 @@ The other classes, namely ```CBC.py```, ```ECB.py```, ```GCM.py```, ```RSA.py```
 
 #### 1. Import Project
 
-Download the github repository from GitHub.com
+Download the GitHub repository from GitHub.com
 
 #### 2. Create a Python virtual environment
 
@@ -50,6 +50,7 @@ Automatically install all the required python packages:
 
 #### 5. Run the project
 Run the program by executing `cryptography.py`:
+
 `python cryptography.py`
 
 Enjoy!
