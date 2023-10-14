@@ -25,7 +25,7 @@ def widget_console(new_text):
     text_widget0.config(state=tk.DISABLED)
 
 
-# allows ...
+# allows to enter own key for encryption and decryption, handles exceptions and avoids not good passwords
 def widget_password():
     global password
 
@@ -46,6 +46,7 @@ def widget_password():
         button_key.pack_forget()
 
 
+# makes sure after encryption or decryption the password widget is active and empty again
 def widget_password_reset():
     global password
 
