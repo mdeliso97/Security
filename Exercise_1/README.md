@@ -35,7 +35,11 @@ Go to the project directory and create a python virtual environment. You can use
 
 Activate the virtual environment:
 
-`source crypto_env/bin/activate`
+`source crypto_env/bin/activate` or `crypto_env\Scripts\activate`
+
+The actions can also be performed into a Terminal instead of an IDE, howver, you would need to start the command line as administrator.
+
+From here the commands are executed using python package `pip`, so if you do not have it yet, make sure to install it first into your machine and adding python `bin` to your system environment variables under `PATH`. Follow the instructions here for more details: [Tutorial Python](https://realpython.com/add-python-to-path/).
 
 #### 3. Enter current folder
 
@@ -49,9 +53,9 @@ Automatically install all the required python packages:
 `pip install -r requirements.txt`
 
 #### 5. Run the project
-Run the program by executing `cryptography.py`:
+Run the program by executing `cryptology.py`:
 
-`python cryptography.py`
+`python cryptology.py`
 
 Enjoy!
 
