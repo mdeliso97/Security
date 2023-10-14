@@ -1,5 +1,5 @@
 import json
-from GCM import gcm_encryption, gcm_decryption
+from GCM import gcm_encrypt, gcm_decrypt
 import codificator
 
 '''
@@ -10,8 +10,10 @@ symmetric cipher.
 
 # RSA encryption using GCM cipher
 def rsa_encryption(file, json_pub):
+    password = None
+
     # retrieve GCM AEAD cipher's outputs: ciphertext, nonce, tag and key
-    json_output, key = gcm_encryption(file)
+    json_output, key = gcm_encrypt(file, password)
 
     json_pub = json.loads(json_pub)
 
@@ -49,6 +51,6 @@ def rsa_decryption(json_file, key_encrypt, json_key_private):
     decrypt_key = codificator.decoding64(decrypt_key)
 
     # decrypt ciphertext with GCM AEAD using decrypted key
-    key_decrypted = gcm_decryption(json_file, decrypt_key)
+    key_decrypted = gcm_decrypt(json_file, decrypt_key)
 
     return key_decrypted

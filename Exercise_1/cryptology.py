@@ -4,8 +4,8 @@ import keygen
 
 from tkinter import filedialog
 from ECB import ecb_encrypt, ecb_decrypt
-from CBC import encrypt_cbc, decrypt_cbc
-from GCM import gcm_encryption, gcm_decryption
+from CBC import cbc_encrypt, cbc_decrypt
+from GCM import gcm_encrypt, gcm_decrypt
 from RSA_OAEP import rsa_oaep_encryption, rsa_oaep_decryption
 from RSA import rsa_encryption, rsa_decryption
 
@@ -28,12 +28,30 @@ def widget_console(new_text):
 # allows ...
 def widget_password():
     global password
-    if text_widget1.get() == "" or len(text_widget1.get()) < 10:
-        widget_console("Error: No valid password, please make sure it is at least 10 characters or symbols")
+
+    password = None
+
+    if len(text_widget1.get()) < 8 and len(text_widget1.get()) % 4 == 0:
+        widget_console("Error: No valid password, please make sure it is at least 8 characters or numbers")
+    elif len(text_widget1.get()) % 4 != 0 and not len(text_widget1.get()) < 8:
+        widget_console("Error: No valid password, please make sure the password length is a multiple of 4")
+
+    elif len(text_widget1.get()) < 8 and len(text_widget1.get()) % 4 != 0:
+        widget_console("Error: No valid password, please make sure it is at least 8 characters or numbers "
+                       "and the length is a multiple of 4")
     else:
         text_widget1.config(state=tk.DISABLED)
         widget_console("Success: password will be used for encryption/decryption")
         password = text_widget1.get()
+        button_key.pack_forget()
+
+
+def widget_password_reset():
+    global password
+
+    password = None
+    text_widget1.config(state=tk.NORMAL)
+    text_widget1.delete(0, tk.END)
 
 
 # executes keygen for private and public key creation
@@ -134,8 +152,8 @@ def hide_option():
         drop_asym.pack_forget()
         drop_sym.pack(pady=10, after=checkbox_encryption)
         frame_password.pack(after=checkbox_encryption)
-        text_widget1.pack(side=tk.LEFT, padx=5)
-        button_password.pack(side=tk.RIGHT, padx=5)
+        text_widget1.pack(side=tk.LEFT, padx=10)
+        button_password.pack(side=tk.RIGHT, padx=10)
     elif not is_encrypt.get() and is_sym.get():
         button_public.pack_forget()
         button_private.pack_forget()
@@ -144,14 +162,16 @@ def hide_option():
         button_key.pack(pady=5, after=button_file)
         drop_sym.pack(pady=10, after=checkbox_encryption)
         frame_password.pack(after=checkbox_encryption, pady=10)
-        text_widget1.pack(side=tk.LEFT, padx=5)
-        button_password.pack(side=tk.RIGHT, padx=5)
+        text_widget1.pack(side=tk.LEFT, padx=10)
+        button_password.pack(side=tk.RIGHT, padx=10)
     elif is_encrypt.get() and not is_sym.get():
         button_private.pack_forget()
         button_key.pack_forget()
         drop_sym.pack_forget()
         button_keygen.pack_forget()
         text_widget1.pack_forget()
+        button_password.pack_forget()
+        frame_password.pack_forget()
         drop_asym.pack(pady=10, after=checkbox_encryption)
         button_keygen.pack(pady=10, before=drop_asym)
         button_public.pack(pady=5, after=button_file)
@@ -159,6 +179,8 @@ def hide_option():
         button_public.pack_forget()
         drop_sym.pack_forget()
         text_widget1.pack_forget()
+        button_password.pack_forget()
+        frame_password.pack_forget()
         drop_asym.pack(pady=10, after=checkbox_encryption)
         button_keygen.pack(pady=10, before=drop_asym)
         button_key.pack(pady=5, after=button_file)
@@ -177,26 +199,37 @@ def start():
     global is_encrypt
     global is_sym
     global key_public
+    global password
 
     # ECB cipher handler
     if clicked_sym.get() == "ECB" and clicked_asym.get() == "Select Asymmetric cipher":
 
         if is_encrypt.get():
-            message, key = ecb_encrypt(content)
-            name_out = "ECB_encrypt"
+            if password is not None:
+                message = ecb_encrypt(content, password)
+                name_out = "ECB_encrypt"
+            else:
+                message, key = ecb_encrypt(content, password)
+                name_out = "ECB_encrypt"
         else:
-            message = ecb_decrypt(content, key)
-            name_out = "ECB_decrypt"
-
-        print(message)
+            if password is not None:
+                message = ecb_decrypt(content, password)
+                name_out = "ECB_decrypt"
+            else:
+                message, key = ecb_decrypt(content, key)
+                name_out = "ECB_decrypt"
 
         # Write the result to a new text file in rb format (byte string)
         if is_encrypt.get():
             with open(f"{name_out}", "wb") as output_file:
                 output_file.write(message)
-            with open("ECB_key", "wb") as output_file:
-                output_file.write(key)
-                widget_console(f"Success: encrypted file written to <{name_out}> and key to <ECB_key>")
+            if password is None:
+                with open("ECB_key", "wb") as output_file:
+                    output_file.write(key)
+                    widget_console(f"Success: encrypted file written to <{name_out}> and key to <ECB_key>")
+            else:
+                widget_console(f"Success: encrypted file written to <{name_out}>")
+
         else:
             with open(f"{name_out}", "wb") as output_file:
                 output_file.write(message)
@@ -205,20 +238,31 @@ def start():
     # CBC cipher handler
     elif clicked_sym.get() == "CBC" and clicked_asym.get() == "Select Asymmetric cipher":
         if is_encrypt.get():
-            message, key = encrypt_cbc(content)
-            name_out = "CBC_encrypt"
+            if password is not None:
+                message = cbc_encrypt(content, password)
+                name_out = "CBC_encrypt"
+            else:
+                message, key = cbc_encrypt(content, password)
+                name_out = "CBC_encrypt"
         else:
-            message = decrypt_cbc(content, key)
-            name_out = "CBC_decrypt"
+            if password is not None:
+                message = cbc_decrypt(content, password)
+                name_out = "CBC_decrypt"
+            else:
+                message, key = cbc_decrypt(content, key)
+                name_out = "CBC_decrypt"
 
         # Write the result to a new text or json file
         if is_encrypt.get():
             with open(f"{name_out}.json", "w") as output_file:
                 output_file.write(message)
 
-            with open("CBC_key", "wb") as output_file:
-                output_file.write(key)
-                widget_console(f"Success: encrypted file written to <{name_out}> and key to <CBC_key>")
+            if password is None:
+                with open("CBC_key", "wb") as output_file:
+                    output_file.write(key)
+                    widget_console(f"Success: encrypted file written to <{name_out}.json> and key to <CBC_key>")
+            else:
+                widget_console(f"Success: encrypted file written to <{name_out}.json>")
 
         else:
             with open(f"{name_out}", "wb") as output_file:
@@ -228,20 +272,31 @@ def start():
     # GCM cipher handler
     elif clicked_sym.get() == 'GCM' and clicked_asym.get() == "Select Asymmetric cipher":
         if is_encrypt.get():
-            message, key = gcm_encryption(content)
-            name_out = "GCM_encrypt"
+            if password is not None:
+                message = gcm_encrypt(content, password)
+                name_out = "GCM_encrypt"
+            else:
+                message, key = gcm_encrypt(content, password)
+                name_out = "GCM_encrypt"
         else:
-            message = gcm_decryption(content, key)
-            name_out = "GCM_decrypt"
+            if password is not None:
+                message = gcm_decrypt(content, password)
+                name_out = "GCM_decrypt"
+            else:
+                message, key = gcm_decrypt(content, key)
+                name_out = "GCM_decrypt"
 
         # Write the result to a new text or json file
         if is_encrypt.get():
             with open(f"{name_out}.json", "w") as output_file:
                 output_file.write(message)
 
-            with open("GCM_key", "wb") as output_file:
-                output_file.write(key)
-                widget_console(f"Success: encrypted file written to <{name_out}> and key to <GCM_key>")
+            if password is None:
+                with open("GCM_key", "wb") as output_file:
+                    output_file.write(key)
+                    widget_console(f"Success: encrypted file written to <{name_out}.json> and key to <GCM_key>")
+            else:
+                widget_console(f"Success: encrypted file written to <{name_out}.json>")
 
         else:
             with open(f"{name_out}", "wb") as output_file:
@@ -264,7 +319,7 @@ def start():
 
                 with open("RSA_key", "w") as output_file:
                     output_file.write(str(key))
-                    widget_console(f"Success: encrypted file written to <{name_out}> and encrypted key to <RSA_key>")
+                    widget_console(f"Success: encrypted file written to <{name_out}.json> and encrypted key to <RSA_key>")
 
             else:
                 with open(f"{name_out}", "wb") as output_file:
@@ -288,7 +343,7 @@ def start():
                 with open("RSA-OAEP_key", "w") as output_file:
                     output_file.write(str(key))
                     widget_console(
-                        f"Success: encrypted file written to <{name_out}> and encrypted key to <RSA-OAEP_key>")
+                        f"Success: encrypted file written to <{name_out}.json> and encrypted key to <RSA-OAEP_key>")
 
             else:
                 with open(f"{name_out}", "wb") as output_file:
@@ -314,6 +369,8 @@ def start():
                 "Error: Select an AEAD sym + asym. cipher and upload the encrypted file you want to decrypt, "
                 "the encrypted key and the private key before proceeding!")
 
+    widget_password_reset()
+
 
 if __name__ == '__main__':
     global key_public
@@ -321,6 +378,8 @@ if __name__ == '__main__':
     global content
     global key
     global password
+
+    password = None
 
     # Initialize pygame
     pygame.mixer.init()
@@ -330,7 +389,7 @@ if __name__ == '__main__':
     root.title("Crypto 8-bit")
 
     # adjust size of GUI
-    root.geometry("320x550")
+    root.geometry("320x580")
 
     # datatype of different objects
     clicked_sym = tk.StringVar()
@@ -358,7 +417,7 @@ if __name__ == '__main__':
     frame_password = tk.Frame(root)
 
     # define widget for password input from user as key
-    text_widget1 = tk.Entry(frame_password, width=15, foreground="black", show="*")
+    text_widget1 = tk.Entry(frame_password, width=20, foreground="black", show="*")
     text_widget1.config(state=tk.NORMAL)
 
     # define buttons and their configuration

@@ -1,6 +1,6 @@
 import json
 import codificator
-from GCM import gcm_encryption, gcm_decryption
+from GCM import gcm_encrypt, gcm_decrypt
 
 '''
 This class defines the logic implemented by hand of RSA-OAEP asymmetric encryption and decryption using GCM AEAD cipher
@@ -10,8 +10,10 @@ as symmetric cipher.
 
 # RSA-OAEP encryption using GCM cipher
 def rsa_oaep_encryption(file, json_pub):
+    password = None
+
     # retrieve GCM AEAD cipher's outputs: ciphertext, nonce, tag and key
-    json_output, key = gcm_encryption(file)
+    json_output, key = gcm_encrypt(file, password)
 
     json_pub = json.loads(json_pub)
 
@@ -49,6 +51,6 @@ def rsa_oaep_decryption(json_file, key_encrypt, json_key_private):
     decrypt_key = codificator.decoding64(decrypt_key)
 
     # decrypt ciphertext with GCM AEAD using decrypted key
-    key_decrypted = gcm_decryption(json_file, decrypt_key)
+    key_decrypted = gcm_decrypt(json_file, decrypt_key)
 
     return key_decrypted

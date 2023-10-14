@@ -2,6 +2,8 @@ import json
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes
+
+import codificator
 from codificator import *
 
 '''
@@ -10,11 +12,15 @@ This class defines the logic of CBC symmetric encryption and decryption.
 
 
 # CBC encryption
-def encrypt_cbc(file):
+def cbc_encrypt(file, password):
     BLOCK_SIZE = 32  # Bytes
 
-    # generate random 256-bit key
-    key = get_random_bytes(BLOCK_SIZE)
+    if password is None:
+        # randomize key for encryption and decryption
+        key = get_random_bytes(BLOCK_SIZE)
+    else:
+        password = codificator.decoding64(password)
+        key = pad(password, BLOCK_SIZE)
 
     # create an AES cipher object in CBC mode
     cipher = AES.new(key, AES.MODE_CBC)
@@ -28,12 +34,19 @@ def encrypt_cbc(file):
 
     json_output = json.dumps({'iv': iv_key, 'ciphertext': ct_key})
 
-    return json_output, key
+    if password is None:
+        return json_output, key
+    else:
+        return json_output
 
 
 # CBC decryption
-def decrypt_cbc(json_file, key):
+def cbc_decrypt(json_file, key):
     BLOCK_SIZE = 32  # Bytes
+
+    if not isinstance(key, (bytes, bytearray)):
+        key = codificator.decoding64(key)
+        key = pad(key, BLOCK_SIZE)
 
     json_file = json.loads(json_file)
 
@@ -51,4 +64,3 @@ def decrypt_cbc(json_file, key):
     decrypted_file = unpad(decrypted_file, BLOCK_SIZE)
 
     return decrypted_file
-
