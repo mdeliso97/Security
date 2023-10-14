@@ -19,10 +19,21 @@ in progress).
 
 # allows printing new text in the widget console by unlocking and locking console state
 def widget_console(new_text):
-    text_widget.config(state=tk.NORMAL)
-    text_widget.delete(1.0, "end-1c")
-    text_widget.insert("1.0", new_text)
-    text_widget.config(state=tk.DISABLED)
+    text_widget0.config(state=tk.NORMAL)
+    text_widget0.delete(1.0, "end-1c")
+    text_widget0.insert("1.0", new_text)
+    text_widget0.config(state=tk.DISABLED)
+
+
+# allows ...
+def widget_password():
+    global password
+    if text_widget1.get() == "" or len(text_widget1.get()) < 10:
+        widget_console("Error: No valid password, please make sure it is at least 10 characters or symbols")
+    else:
+        text_widget1.config(state=tk.DISABLED)
+        widget_console("Success: password will be used for encryption/decryption")
+        password = text_widget1.get()
 
 
 # executes keygen for private and public key creation
@@ -122,24 +133,32 @@ def hide_option():
         button_keygen.pack_forget()
         drop_asym.pack_forget()
         drop_sym.pack(pady=10, after=checkbox_encryption)
+        frame_password.pack(after=checkbox_encryption)
+        text_widget1.pack(side=tk.LEFT, padx=5)
+        button_password.pack(side=tk.RIGHT, padx=5)
     elif not is_encrypt.get() and is_sym.get():
         button_public.pack_forget()
         button_private.pack_forget()
-        button_key.pack(pady=5, after=button_file)
         button_keygen.pack_forget()
         drop_asym.pack_forget()
+        button_key.pack(pady=5, after=button_file)
         drop_sym.pack(pady=10, after=checkbox_encryption)
+        frame_password.pack(after=checkbox_encryption, pady=10)
+        text_widget1.pack(side=tk.LEFT, padx=5)
+        button_password.pack(side=tk.RIGHT, padx=5)
     elif is_encrypt.get() and not is_sym.get():
         button_private.pack_forget()
         button_key.pack_forget()
         drop_sym.pack_forget()
         button_keygen.pack_forget()
+        text_widget1.pack_forget()
         drop_asym.pack(pady=10, after=checkbox_encryption)
         button_keygen.pack(pady=10, before=drop_asym)
         button_public.pack(pady=5, after=button_file)
     elif not is_encrypt.get() and not is_sym.get():
         button_public.pack_forget()
         drop_sym.pack_forget()
+        text_widget1.pack_forget()
         drop_asym.pack(pady=10, after=checkbox_encryption)
         button_keygen.pack(pady=10, before=drop_asym)
         button_key.pack(pady=5, after=button_file)
@@ -301,6 +320,7 @@ if __name__ == '__main__':
     global key_private
     global content
     global key
+    global password
 
     # Initialize pygame
     pygame.mixer.init()
@@ -330,9 +350,16 @@ if __name__ == '__main__':
     label0 = tk.Label(root, text="Crypto 8-bit", font=("Helvetica", 24, "bold"), foreground="blue")
 
     # define widget for console outputs
-    text_widget = tk.Text(root, height=6, width=30, foreground="red")
-    text_widget.insert("1.0", "Welcome to Crypto 8-bit!")
-    text_widget.config(state=tk.DISABLED)
+    text_widget0 = tk.Text(root, height=6, width=30, foreground="red")
+    text_widget0.insert("1.0", "Welcome to Crypto 8-bit!")
+    text_widget0.config(state=tk.DISABLED)
+
+    # adds a frame containing both password widget and button to confirm it
+    frame_password = tk.Frame(root)
+
+    # define widget for password input from user as key
+    text_widget1 = tk.Entry(frame_password, width=15, foreground="black", show="*")
+    text_widget1.config(state=tk.NORMAL)
 
     # define buttons and their configuration
     button_file = tk.Button(root, text="Source File", command=open_file)
@@ -342,6 +369,7 @@ if __name__ == '__main__':
     button_public = tk.Button(root, text="Source Public Key", command=source_public_key)
     button_private = tk.Button(root, text="Source Private Key", command=source_private_key)
     button_keygen = tk.Button(root, text="Keygen", command=keygen_exe)
+    button_password = tk.Button(frame_password, text="Confirm", command=widget_password)
 
     # define checkboxes and their configuration
     checkbox_symmetric = tk.Checkbutton(root, text="Checked sym. / Unchecked asym.", variable=is_sym,
@@ -358,7 +386,7 @@ if __name__ == '__main__':
     button_private.pack(pady=5)
     button_start.pack(pady=10)
     button_exit.pack()
-    text_widget.pack(pady=20)
+    text_widget0.pack(pady=20)
 
     # bind the exit event handler to the window's close button
     root.protocol("WM_DELETE_WINDOW", on_closing)
