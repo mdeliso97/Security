@@ -1,12 +1,11 @@
 import json
-import random
 import math
-
 from Crypto.Util import number
-from Crypto.Util.number import inverse
-from cryptology import keygen_output
 
 '''
+This class keygen is attached to the button "keygen" in the GUI and is responsible of generating the key pairs public 
+and private key. It follows the following steps:
+
 1. Select two large prime numbers, p and q.
 2. Calculate the modulus n = p * q.
 3. Calculate Euler's totient function phi(n) = (p - 1) * (q - 1).
@@ -16,23 +15,29 @@ from cryptology import keygen_output
 '''
 
 
+# outputs the key as json files
+def keygen_output(json_output_public, json_output_private):
+    with open("public_key.json", "w") as output_file:
+        output_file.write(json_output_public)
+
+    with open("private_key.json", "w") as output_file:
+        output_file.write(json_output_private)
+
+
+# generates two prime numbers given their length
 def primes_gen(length):
     p = number.getPrime(length)
     q = number.getPrime(length)
     return p, q
 
 
+# generates private and public keys
 def keygen():
     # generate two big prime numbers of 3000 length
     p, q = primes_gen(3000)
 
-    print(len(str(p)))
-    print(len(str(q)))
-
     # calculate modulus n
     n = p * q
-
-    print(len(str(n)))
 
     # calculate Euler's Totient function
     phi = (p - 1) * (q - 1)
@@ -45,13 +50,9 @@ def keygen():
         e = number.getPrime(50)
 
     # generate d
-    d = inverse(e, phi)
+    d = pow(e, -1, phi)
 
-    n_key = n
-    public_key = e
-    private_key = d
-
-    json_output_public = json.dumps({'n': n_key, 'public': public_key})
-    json_output_private = json.dumps({'n': n_key, 'private': private_key})
+    json_output_public = json.dumps({'n': n, 'public': e})
+    json_output_private = json.dumps({'n': n, 'private': d})
 
     return keygen_output(json_output_public, json_output_private)
