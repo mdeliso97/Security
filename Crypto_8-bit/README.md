@@ -14,9 +14,15 @@ The symmetric key is randomized if the user does not provide any password, since
 
 ## How to run the program
 
+#### 0. Install python latest version
+
+To install correctly this program, you will need to install python 3.9.13 version or later, see [Python 3.9.13](https://www.python.org/downloads/windows/), scroll down until you find the correct version compatible with your system.
+
+As soon as you start the installer, make sure to check the checkbox ***Add python 3.9.13 to PATH***. To check whether the installation was successfully, restart your system, open a terminal and write `python --version`, if it outputs `python 3.9.13`, you successfully installed the version.
+
 #### 1. Import Project
 
-Download the GitHub repository from GitHub.com
+Download the GitHub repository from [Repository](https://GitHub.com/mdeliso97/Security)
 
 #### 2. Create a Python virtual environment
 
@@ -29,8 +35,6 @@ Activate the virtual environment:
 `source crypto_env/bin/activate` or `crypto_env\Scripts\activate`
 
 The actions can also be performed into a Terminal instead of an IDE, however, you would need to start the command line as administrator.
-
-From here the commands are executed using python package `pip`, so if you do not have it yet, make sure to install it first into your machine and adding python `bin` to your system environment variables under `PATH`. Follow the instructions here for more details: [Tutorial Python](https://realpython.com/add-python-to-path/).
 
 #### 3. Enter current folder
 
