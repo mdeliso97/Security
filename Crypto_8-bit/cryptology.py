@@ -217,7 +217,7 @@ def start():
                 message = ecb_decrypt(content, password)
                 name_out = "ECB_decrypt"
             else:
-                message, key = ecb_decrypt(content, key)
+                message = ecb_decrypt(content, key)
                 name_out = "ECB_decrypt"
 
         # Write the result to a new text file in rb format (byte string)
@@ -250,7 +250,7 @@ def start():
                 message = cbc_decrypt(content, password)
                 name_out = "CBC_decrypt"
             else:
-                message, key = cbc_decrypt(content, key)
+                message = cbc_decrypt(content, key)
                 name_out = "CBC_decrypt"
 
         # Write the result to a new text or json file
@@ -284,7 +284,7 @@ def start():
                 message = gcm_decrypt(content, password)
                 name_out = "GCM_decrypt"
             else:
-                message, key = gcm_decrypt(content, key)
+                message = gcm_decrypt(content, key)
                 name_out = "GCM_decrypt"
 
         # Write the result to a new text or json file
@@ -354,7 +354,7 @@ def start():
     # wrong events handlers
     else:
         if is_sym.get() and is_encrypt.get():
-            widget_console("Error: Select a symmetric cipher and upload the file before proceeding!")
+            widget_console("Error: Select ONLY a symmetric cipher and upload the file before proceeding!")
 
         elif not is_sym.get() and is_encrypt.get():
             widget_console(
