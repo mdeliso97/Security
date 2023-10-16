@@ -14,7 +14,30 @@ The symmetric key is randomized if the user does not provide any password, since
 
 ## How to run the program
 
-#### 0. Install python latest version
+### Using auto installer (Windows)
+
+#### 0. Install python the latest version
+
+To install correctly this program, you will need to install python 3.9.13 version or later, see [Python 3.9.13](https://www.python.org/downloads/windows/), scroll down until you find the correct version compatible with your system.
+
+As soon as you start the installer, make sure to check the checkbox ***Add python 3.9.13 to PATH***. To check whether the installation was successfully, restart your system, open a terminal and write `python --version`, if it outputs `python 3.9.13`, you successfully installed the version.
+
+#### 1. Import Project
+
+Download the GitHub repository from [Repository](https://GitHub.com/mdeliso97/Security)
+
+#### 2. Install program
+
+To install the program it is simply needed to double-click on the file ```installer.bat```. This program will to all installations for you and create a separated file called ```Crypto_8-bit.bat```.
+
+#### 3. Run the program
+
+To run the program, double-click on the file ```Crypto_8-bit.bat```.
+
+
+### Manually run the program
+
+#### 0. Install python the latest version
 
 To install correctly this program, you will need to install python 3.9.13 version or later, see [Python 3.9.13](https://www.python.org/downloads/windows/), scroll down until you find the correct version compatible with your system.
 

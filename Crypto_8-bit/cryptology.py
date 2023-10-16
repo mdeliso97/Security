@@ -1,13 +1,14 @@
 import tkinter as tk
 import pygame
-import keygen
+from Utilities import keygen
 
-from tkinter import filedialog
-from ECB import ecb_encrypt, ecb_decrypt
-from CBC import cbc_encrypt, cbc_decrypt
-from GCM import gcm_encrypt, gcm_decrypt
-from RSA_OAEP import rsa_oaep_encryption, rsa_oaep_decryption
-from RSA import rsa_encryption, rsa_decryption
+from tkinter import filedialog, messagebox
+from Ciphers.ECB import ecb_encrypt, ecb_decrypt
+from Ciphers.CBC import cbc_encrypt, cbc_decrypt
+from Ciphers.GCM import gcm_encrypt, gcm_decrypt
+from Ciphers.RSA_OAEP import rsa_oaep_encryption, rsa_oaep_decryption
+from Ciphers.RSA import rsa_encryption, rsa_decryption
+from Utilities.dialog_message import dialog_message
 
 '''
 This class is the main of Crypto 8-bit, defines all the GUI elements and initiates them, handles all different ciphers
@@ -55,6 +56,11 @@ def widget_password_reset():
     text_widget1.delete(0, tk.END)
 
 
+def popUp_description():
+    info = dialog_message()
+    messagebox.showinfo("Instructions", info)
+
+
 # executes keygen for private and public key creation
 def keygen_exe():
     keygen.keygen()
@@ -97,6 +103,10 @@ def source_key():
     if file_path:
         widget_console("Success: key uploaded successfully!")
 
+        text_widget1.pack_forget()
+        button_password.pack_forget()
+        frame_password.pack_forget()
+
         with open(file_path, "rb") as file:
             key = file.read()
     else:
@@ -112,7 +122,7 @@ def source_public_key():
         filetypes=[("All Files", "*.*")])  # Specify file types
 
     if file_path and file_path.endswith(".json"):
-        widget_console("Success: key uploaded successfully!")
+        widget_console("Success: public key uploaded successfully!")
 
         with open(file_path, "r") as file:
             key_public = file.read()
@@ -320,7 +330,8 @@ def start():
 
                 with open("RSA_key", "w") as output_file:
                     output_file.write(str(key))
-                    widget_console(f"Success: encrypted file written to <{name_out}.json> and encrypted key to <RSA_key>")
+                    widget_console(
+                        f"Success: encrypted file written to <{name_out}.json> and encrypted key to <RSA_key>")
 
             else:
                 with open(f"{name_out}", "wb") as output_file:
@@ -378,7 +389,6 @@ if __name__ == '__main__':
     global key_private
     global content
     global key
-    global password
 
     password = None
 
@@ -406,9 +416,6 @@ if __name__ == '__main__':
     drop_sym = tk.OptionMenu(root, clicked_sym, *["Select Symmetric cipher", "ECB", "CBC", "GCM"])
     drop_asym = tk.OptionMenu(root, clicked_asym, *["Select Asymmetric cipher", "RSA", "RSA-OAEP"])
 
-    # define label for program title
-    label0 = tk.Label(root, text="Crypto 8-bit", font=("Helvetica", 24, "bold"), foreground="blue")
-
     # define widget for console outputs
     text_widget0 = tk.Text(root, height=6, width=30, foreground="red")
     text_widget0.insert("1.0", "Welcome to Crypto 8-bit!")
@@ -416,10 +423,14 @@ if __name__ == '__main__':
 
     # adds a frame containing both password widget and button to confirm it
     frame_password = tk.Frame(root)
+    frame_popUp = tk.Frame(root)
 
     # define widget for password input from user as key
     text_widget1 = tk.Entry(frame_password, width=20, foreground="black", show="*")
     text_widget1.config(state=tk.NORMAL)
+
+    # define label for program title
+    label0 = tk.Label(root, text="Crypto 8-bit", font=("Helvetica", 24, "bold"), foreground="blue", relief=tk.SUNKEN)
 
     # define buttons and their configuration
     button_file = tk.Button(root, text="Source File", command=open_file)
@@ -430,13 +441,16 @@ if __name__ == '__main__':
     button_private = tk.Button(root, text="Source Private Key", command=source_private_key)
     button_keygen = tk.Button(root, text="Keygen", command=keygen_exe)
     button_password = tk.Button(frame_password, text="Confirm", command=widget_password)
+    button_popUp_info = tk.Button(root, text="(i)", command=popUp_description)
 
     # define checkboxes and their configuration
     checkbox_symmetric = tk.Checkbutton(root, text="Checked sym. / Unchecked asym.", variable=is_sym,
                                         command=hide_option)
     checkbox_encryption = tk.Checkbutton(root, text="Checked encrypt. / Unchecked decrypt.", variable=is_encrypt,
                                          command=hide_option)
-    label0.pack(pady=30)
+    button_popUp_info.pack(padx=10, side=tk.RIGHT, anchor='ne')
+    button_popUp_info.place(x=280, y=10)
+    label0.pack(side="top", pady=30)
     checkbox_symmetric.pack(pady=0)
     checkbox_encryption.pack(pady=0)
     button_keygen.pack(pady=10)
@@ -455,7 +469,7 @@ if __name__ == '__main__':
     root.protocol("START", start)
 
     # load and play the MP3 file
-    pygame.mixer.music.load("jeremy_blake-powerup.mp3")
+    pygame.mixer.music.load("Utilities/jeremy_blake-powerup.mp3")
     pygame.mixer.music.play(-1)  # -1 means the music will loop indefinitely
 
     root.mainloop()

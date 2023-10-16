@@ -3,7 +3,7 @@ from Crypto.Util.Padding import pad
 from Crypto.Util.Padding import unpad
 from Crypto.Random import get_random_bytes
 
-import codificator
+from Utilities import codificator
 
 '''
 This class defines the logic of ECB symmetric encryption and decryption.
