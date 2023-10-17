@@ -12,23 +12,18 @@ as symmetric cipher.
 '''
 
 
-# converts a non-negative integer to an octet string of a specified length
-def i2osp(x: int, xlen: int) -> bytes:
-    return x.to_bytes(xlen, byteorder='little')
-
-
-def mgf1_mask(seed: bytes, message_length: int) -> bytes:
-    '''MGF1 mask generation function with SHA-1'''
+# defines the MGF1 mask using SHA-1 hash function
+def mgf1_mask(seed, message_length):
     t = b''
     hash_length = len(sha1_hash(b''))
     for c in range(0, ceil(message_length / hash_length)):
-        _c = i2osp(c, 4)
+        _c = c.to_bytes(4, byteorder='little')
         t += sha1_hash(seed + _c)
     return t[:message_length]
 
 
+# defines the hash function used for the mask SHA-1
 def sha1_hash(message: bytes) -> bytes:
-    '''SHA-1 hash function'''
     hasher = hashlib.sha1()
     hasher.update(message)
     return hasher.digest()
@@ -61,22 +56,31 @@ def rsa_oaep_encryption(file, json_pub):
 
     password = None
 
+    # label to be associated with the message which is used to authenticate data
     label_hash = sha1_hash(label)
 
+    # generate a padding string PS
     ps = b'\x00' * (len(str(n_key)) - len(file) - 2 * len(label_hash) - 2)  # a byte string of k − mLen − 2 ⋅ hLen − 2
 
+    # concatenate lHash, PS, the single byte 0x01
     file_db = label_hash + ps + b'\x01' + file
 
+    # generate a random seed of same length of label hash
     seed = os.urandom(len(label_hash))
 
+    # generate a mask of the appropriate length for the data block
     db_mask = mgf1_mask(seed, len(str(n_key)) - len(label_hash) - 1)
 
+    # mask the data block with the generated mask
     file_masked = xor_operation(file_db, db_mask)
 
+    # use the mask generating function to generate a mask of label hash length for the seed
     seed_mask = mgf1_mask(file_masked, len(label_hash))
 
+    # mask the seed with the generated mask
     masked_seed = xor_operation(seed, seed_mask)
 
+    # concatenate everything to obtain encoded file
     file_oaep = b'\x00' + masked_seed + file_masked
 
     # retrieve GCM AEAD cipher's outputs: ciphertext, nonce, tag and key
@@ -117,9 +121,10 @@ def rsa_oaep_decryption(json_file, key_encrypt, json_key_private):
     # oaep revert masking + hashing
     label = b''
 
-    label_hash = sha1_hash(label)  # hlen = len(lhash)
+    label_hash = sha1_hash(label)
 
-    _, masked_seed, masked_db = file_decrypted[:1], file_decrypted[1:1 + len(label_hash)], file_decrypted[1 + len(label_hash):]
+    _, masked_seed, masked_db = file_decrypted[:1], file_decrypted[1:1 + len(label_hash)], file_decrypted[
+                                                                                           1 + len(label_hash):]
 
     seed_mask = mgf1_mask(masked_db, len(label_hash))
 

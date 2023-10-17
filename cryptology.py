@@ -246,6 +246,8 @@ def start():
                 output_file.write(message)
             widget_console(f"Success: decrypted file written to <{name_out}>")
 
+        widget_password_reset()
+
     # CBC cipher handler
     elif clicked_sym.get() == "CBC" and clicked_asym.get() == "Select Asymmetric cipher":
         if is_encrypt.get():
@@ -279,6 +281,8 @@ def start():
             with open(f"{name_out}", "wb") as output_file:
                 output_file.write(message)
                 widget_console(f"Success: decrypted file written to <{name_out}>")
+
+        widget_password_reset()
 
     # GCM cipher handler
     elif clicked_sym.get() == 'GCM' and clicked_asym.get() == "Select Asymmetric cipher":
@@ -314,6 +318,8 @@ def start():
                 output_file.write(message)
                 widget_console(f"Success: decrypted file written to <{name_out}>")
 
+        widget_password_reset()
+
     elif clicked_asym.get() == 'RSA' and clicked_sym.get() == 'GCM':
         if not is_sym.get():
             if is_encrypt.get():
@@ -337,6 +343,13 @@ def start():
                 with open(f"{name_out}", "wb") as output_file:
                     output_file.write(message)
                     widget_console(f"Success: decrypted file written to <{name_out}>")
+
+        else:
+            widget_console(
+                "Error: You cannot perform sym. while selecting an asym. cipher, please deselect"
+                " the asym. cipher if you aim to perform a sym. encryption/decryption or check the asym. checkbox!")
+
+        widget_password_reset()
 
     elif clicked_asym.get() == 'RSA-OAEP' and clicked_sym.get() == 'GCM':
         if not is_sym.get():
@@ -362,6 +375,13 @@ def start():
                     output_file.write(message)
                     widget_console(f"Success: decrypted file written to <{name_out}>")
 
+        else:
+            widget_console(
+                "Error: You cannot perform sym. while selecting an asym. cipher, please deselect"
+                " the asym. cipher if you aim to perform a sym. encryption/decryption or check the asym. checkbox!")
+
+        widget_password_reset()
+
     # wrong events handlers
     else:
         if is_sym.get() and is_encrypt.get():
@@ -380,8 +400,6 @@ def start():
             widget_console(
                 "Error: Select an AEAD sym + asym. cipher and upload the encrypted file you want to decrypt, "
                 "the encrypted key and the private key before proceeding!")
-
-    widget_password_reset()
 
 
 if __name__ == '__main__':
