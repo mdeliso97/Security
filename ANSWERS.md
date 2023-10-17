@@ -10,9 +10,9 @@
 
 ### Demonstration showing that AEAD is better than “classic” modes of operation
 
-- Demonstration showing that AEAD is better than “classic” modes of operationAEAD modes like GCM, CCM, or EAX combine encryption and authentication in a single step. Classic modes, such as ECB or CBC, require separate mechanisms for encryption and integrity checking (e.g., HMAC), making the implementation more complex and potentially error-prone.
+- AEAD is better than “classic” modes of operationAEAD modes like GCM, CCM, or EAX combine encryption and authentication in a single step. Classic modes, such as ECB or CBC, require separate mechanisms for encryption and integrity checking (e.g., HMAC), making the implementation more complex and potentially error-prone.
 - AEAD modes use cryptographic tags to detect any unauthorized changes to the ciphertext. In classic modes, without authentication, an attacker can tamper with the ciphertext or manipulate the data without detection.
-
+- AEAD avoids Man in the middle attack
 
 
 
