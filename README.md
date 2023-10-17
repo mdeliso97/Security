@@ -30,6 +30,8 @@ For direct installation link, follow hereafter:
 
 As soon as you start the installer, make sure to check the checkbox ***Add python 3.9.13 to PATH***. To check whether the installation was successfully, restart your system, open a terminal and write `python --version`, if it outputs `python 3.9.13`, you successfully installed the version.
 
+### Using manual installer (Windows)
+
 #### 1. Import Project
 
 Download the GitHub repository from [Repository](https://GitHub.com/mdeliso97/Security)
