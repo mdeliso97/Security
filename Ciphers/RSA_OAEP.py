@@ -1,9 +1,6 @@
 import hashlib
 import json
 import os
-import random
-
-from Crypto.Random import get_random_bytes
 
 from Utilities import codificator
 from math import ceil
@@ -54,8 +51,6 @@ def xor_operation(data, mask):
 
 # RSA-OAEP encryption using GCM cipher
 def rsa_oaep_encryption(file, json_pub):
-    BLOCK_SIZE = 32
-
     # retrieve n and public key for encryption
     json_pub = json.loads(json_pub)
 
@@ -68,13 +63,13 @@ def rsa_oaep_encryption(file, json_pub):
 
     label_hash = sha1_hash(label)
 
-    ps = b'\x00' * (len(n_key) - len(file) - 2 * len(label_hash) - 2)  # a byte string of k − m L e n − 2 ⋅ h L e n − 2
+    ps = b'\x00' * (len(str(n_key)) - len(file) - 2 * len(label_hash) - 2)  # a byte string of k − mLen − 2 ⋅ hLen − 2
 
     file_db = label_hash + ps + b'\x01' + file
 
     seed = os.urandom(len(label_hash))
 
-    db_mask = mgf1_mask(seed, len(n_key) - len(label_hash) - 1)
+    db_mask = mgf1_mask(seed, len(str(n_key)) - len(label_hash) - 1)
 
     file_masked = xor_operation(file_db, db_mask)
 
@@ -101,7 +96,50 @@ def rsa_oaep_encryption(file, json_pub):
 
 # RSA-OAEP decryption using GCM cipher
 def rsa_oaep_decryption(json_file, key_encrypt, json_key_private):
+    json_key = json.loads(json_key_private)
 
+    # retrieve n and private key for decryption of key
+    private_key = json_key["private"]
+    n_key = json_key['n']
 
+    # convert string encrypted key into integer key
+    key_encrypt = int(key_encrypt)
 
-    return key_decrypted
+    # key decryption: C = ciphertext, M = C^d (mod n)
+    decrypt_key = pow(key_encrypt, private_key, n_key)
+
+    # convert decrypted GCM key from integer to byte string
+    decrypt_key = codificator.decoding64(decrypt_key)
+
+    # decrypt ciphertext with GCM AEAD using decrypted key
+    file_decrypted = gcm_decrypt(json_file, decrypt_key)
+
+    # oaep revert masking + hashing
+    label = b''
+
+    label_hash = sha1_hash(label)  # hlen = len(lhash)
+
+    _, masked_seed, masked_db = file_decrypted[:1], file_decrypted[1:1 + len(label_hash)], file_decrypted[1 + len(label_hash):]
+
+    seed_mask = mgf1_mask(masked_db, len(label_hash))
+
+    seed = xor_operation(masked_seed, seed_mask)
+
+    db_mask = mgf1_mask(seed, len(str(n_key)) - len(label_hash) - 1)
+
+    file_masked = xor_operation(masked_db, db_mask)
+
+    _label_hash = file_masked[:len(label_hash)]
+    assert label_hash == _label_hash  # check if label corresponds
+    i = len(label_hash)
+    while i < len(file_masked):
+        if file_masked[i] == 0:
+            i += 1
+            continue
+        elif file_masked[i] == 1:
+            i += 1
+            break
+        else:
+            raise Exception()
+    file_raw = file_masked[i:]
+    return file_raw
