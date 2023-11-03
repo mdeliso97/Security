@@ -1,6 +1,7 @@
 import tkinter as tk
 import pygame
 from Utilities import keygen
+from PIL import Image, ImageTk
 
 from tkinter import filedialog, messagebox
 from Ciphers.ECB import ecb_encrypt, ecb_decrypt
@@ -202,6 +203,18 @@ def hide_option():
 def on_closing():
     pygame.mixer.music.stop()  # Stop the audio playback
     root.destroy()
+
+
+# toggles on/off the volume
+def volume_toggler():
+    global is_volume_on
+    is_volume_on = not is_volume_on
+    if is_volume_on:
+        button_volume.configure(image=volume_on)
+        pygame.mixer.music.unpause()
+    else:
+        button_volume.configure(image=volume_off)
+        pygame.mixer.music.pause()
 
 
 # Defines actions when pressing start button
@@ -409,6 +422,7 @@ if __name__ == '__main__':
     global key
 
     password = None
+    is_volume_on = True
 
     # Initialize pygame
     pygame.mixer.init()
@@ -433,6 +447,10 @@ if __name__ == '__main__':
     # create Dropdown menu
     drop_sym = tk.OptionMenu(root, clicked_sym, *["Select Symmetric cipher", "ECB", "CBC", "GCM"])
     drop_asym = tk.OptionMenu(root, clicked_asym, *["Select Asymmetric cipher", "RSA", "RSA-OAEP"])
+
+    # import images for button
+    volume_on = tk.PhotoImage(file='Utilities/volume_on.png').subsample(12, 12)
+    volume_off = tk.PhotoImage(file='Utilities/volume_off.png').subsample(12, 12)
 
     # define widget for console outputs
     text_widget0 = tk.Text(root, height=6, width=30, foreground="red")
@@ -461,13 +479,19 @@ if __name__ == '__main__':
     button_password = tk.Button(frame_password, text="Confirm", command=widget_password)
     button_popUp_info = tk.Button(root, text="(i)", command=popUp_description)
 
+    # define button for volume toggle off/on
+    button_volume = tk.Button(root, image=volume_on, command=volume_toggler)
+    button_volume.configure(borderwidth=2, highlightthickness=2)
+
     # define checkboxes and their configuration
     checkbox_symmetric = tk.Checkbutton(root, text="Checked sym. / Unchecked asym.", variable=is_sym,
                                         command=hide_option)
     checkbox_encryption = tk.Checkbutton(root, text="Checked encrypt. / Unchecked decrypt.", variable=is_encrypt,
                                          command=hide_option)
-    button_popUp_info.pack(padx=10, side=tk.RIGHT, anchor='ne')
+    button_popUp_info.pack(padx=10)
+    button_volume.pack(padx=10)
     button_popUp_info.place(x=280, y=10)
+    button_volume.place(x=277, y=40)
     label0.pack(side="top", pady=30)
     checkbox_symmetric.pack(pady=0)
     checkbox_encryption.pack(pady=0)
