@@ -89,7 +89,7 @@ def open_file():
             content = file.read()
 
     elif file_path.endswith(".json") and not is_encrypt.get() and (
-            clicked_sym.get() == "CBC", "GCM", "RSA", "RSA-OAEP"):
+            clicked_sym.get() == "ECB", "CBC", "GCM", "RSA", "RSA-OAEP"):
 
         widget_console("Success: file .json to be decrypted uploaded!")
 
@@ -232,194 +232,211 @@ def start():
     global password
     global extension
 
-    # ECB cipher handler
-    if clicked_sym.get() == "ECB" and clicked_asym.get() == "Select Asymmetric cipher":
-
-        if is_encrypt.get():
-            if password is not None:
-                message = ecb_encrypt(content, password, filename, file_extension)
-                name_out = f"{filename}_ECB_encrypt"
-            else:
-                message, key = ecb_encrypt(content, password, filename, file_extension)
-                name_out = f"{filename}_ECB_encrypt"
+    try:
+        # creates a Results folder if it does not exist, otherwise it enters the folder
+        if os.path.exists("Results"):
+            os.chdir("Results")
         else:
-            if password is not None:
-                message, filename_dec, extension = ecb_decrypt(content, password)
-                name_out = f"{filename_dec}_ECB_decrypt"
-            else:
-                message, filename_dec, extension = ecb_decrypt(content, key)
-                name_out = f"{filename_dec}_ECB_decrypt"
+            os.makedirs("Results")
+            os.chdir("Results")
 
-        # Write the result to a new text file in rb format (byte string)
-        if is_encrypt.get():
-            with open(f"{name_out}.json", "w") as output_file:
-                output_file.write(message)
-            if password is None:
-                with open(f"{filename}_ECB_key", "wb") as output_file:
-                    output_file.write(key)
-                    widget_console(f"Success: encrypted file written to <{name_out}.json> and key to <{filename}_ECB_key>")
-            else:
-                widget_console(f"Success: encrypted file written to <{name_out}.json>")
+        # ECB cipher handler
+        if clicked_sym.get() == "ECB" and clicked_asym.get() == "Select Asymmetric cipher":
 
-        else:
-            with open(f"{name_out}{extension}", "wb") as output_file:
-                output_file.write(message)
-            widget_console(f"Success: decrypted file written to <{name_out}>")
-
-        widget_password_reset()
-
-    # CBC cipher handler
-    elif clicked_sym.get() == "CBC" and clicked_asym.get() == "Select Asymmetric cipher":
-        if is_encrypt.get():
-            if password is not None:
-                message = cbc_encrypt(content, password, filename, file_extension)
-                name_out = f"{filename}_CBC_encrypt"
-            else:
-                message, key = cbc_encrypt(content, password, filename, file_extension)
-                name_out = f"{filename}_CBC_encrypt"
-        else:
-            if password is not None:
-                message, filename_dec, extension = cbc_decrypt(content, password)
-                name_out = f"{filename_dec}_CBC_decrypt"
-            else:
-                message, filename_dec, extension = cbc_decrypt(content, key)
-                name_out = f"{filename_dec}_CBC_decrypt"
-
-        # Write the result to a new text or json file
-        if is_encrypt.get():
-            with open(f"{name_out}.json", "w") as output_file:
-                output_file.write(message)
-
-            if password is None:
-                with open(f"{filename}_CBC_key", "wb") as output_file:
-                    output_file.write(key)
-                    widget_console(f"Success: encrypted file written to <{name_out}.json> and key to <{filename}_CBC_key>")
-            else:
-                widget_console(f"Success: encrypted file written to <{name_out}.json>")
-
-        else:
-            with open(f"{name_out}{extension}", "wb") as output_file:
-                output_file.write(message)
-                widget_console(f"Success: decrypted file written to <{name_out}>")
-
-        widget_password_reset()
-
-    # GCM cipher handler
-    elif clicked_sym.get() == 'GCM' and clicked_asym.get() == "Select Asymmetric cipher":
-        if is_encrypt.get():
-            if password is not None:
-                message = gcm_encrypt(content, password, filename, file_extension)
-                name_out = f"{filename}_GCM_encrypt"
-            else:
-                message, key = gcm_encrypt(content, password, filename, file_extension)
-                name_out = f"{filename}_GCM_encrypt"
-        else:
-            if password is not None:
-                message, filename_dec, extension = gcm_decrypt(content, password)
-                name_out = f"{filename_dec}_GCM_decrypt"
-            else:
-                message, filename_dec, extension = gcm_decrypt(content, key)
-                name_out = f"{filename_dec}_GCM_decrypt"
-
-        # Write the result to a new text or json file
-        if is_encrypt.get():
-            with open(f"{name_out}.json", "w") as output_file:
-                output_file.write(message)
-
-            if password is None:
-                with open(f"{filename}_GCM_key", "wb") as output_file:
-                    output_file.write(key)
-                    widget_console(f"Success: encrypted file written to <{name_out}.json> and key to <{filename}_GCM_key>")
-            else:
-                widget_console(f"Success: encrypted file written to <{name_out}.json>")
-
-        else:
-            with open(f"{name_out}{extension}", "wb") as output_file:
-                output_file.write(message)
-                widget_console(f"Success: decrypted file written to <{name_out}>")
-
-        widget_password_reset()
-
-    elif clicked_asym.get() == 'RSA' and clicked_sym.get() == 'GCM':
-        if not is_sym.get():
             if is_encrypt.get():
-                message, key = rsa_encryption(content, key_public, filename, file_extension)
-                name_out = f"{filename}_RSA_encrypt"
+                if password is not None:
+                    message = ecb_encrypt(content, password, filename, file_extension)
+                    name_out = f"{filename}_ECB_encrypt"
+                else:
+                    message, key = ecb_encrypt(content, password, filename, file_extension)
+                    name_out = f"{filename}_ECB_encrypt"
             else:
-                message, filename_dec, extension = rsa_decryption(content, key, key_private)
-                name_out = f"{filename_dec}_RSA_decrypt"
+                if password is not None:
+                    message, filename_dec, extension = ecb_decrypt(content, password)
+                    name_out = f"{filename_dec}_ECB_decrypt"
+                else:
+                    message, filename_dec, extension = ecb_decrypt(content, key)
+                    name_out = f"{filename_dec}_ECB_decrypt"
+
+            # Write the result to a new text file in rb format (byte string)
+            if is_encrypt.get():
+                with open(f"{name_out}.json", "w") as output_file:
+                    output_file.write(message)
+                if password is None:
+                    with open(f"{filename}_ECB_key", "wb") as output_file:
+                        output_file.write(key)
+                        widget_console(
+                            f"Success: encrypted file written to <{name_out}.json> and key to <{filename}_ECB_key> in Results folder")
+                else:
+                    widget_console(f"Success: encrypted file written to <{name_out}.json> in Results folder")
+
+            else:
+                with open(f"{name_out}{extension}", "wb") as output_file:
+                    output_file.write(message)
+                widget_console(f"Success: decrypted file written to <{name_out}> in Results folder")
+
+            widget_password_reset()
+
+        # CBC cipher handler
+        elif clicked_sym.get() == "CBC" and clicked_asym.get() == "Select Asymmetric cipher":
+            if is_encrypt.get():
+                if password is not None:
+                    message = cbc_encrypt(content, password, filename, file_extension)
+                    name_out = f"{filename}_CBC_encrypt"
+                else:
+                    message, key = cbc_encrypt(content, password, filename, file_extension)
+                    name_out = f"{filename}_CBC_encrypt"
+            else:
+                if password is not None:
+                    message, filename_dec, extension = cbc_decrypt(content, password)
+                    name_out = f"{filename_dec}_CBC_decrypt"
+                else:
+                    message, filename_dec, extension = cbc_decrypt(content, key)
+                    name_out = f"{filename_dec}_CBC_decrypt"
 
             # Write the result to a new text or json file
             if is_encrypt.get():
                 with open(f"{name_out}.json", "w") as output_file:
                     output_file.write(message)
 
-                with open(f"{filename}_RSA_key", "w") as output_file:
-                    output_file.write(str(key))
-                    widget_console(
-                        f"Success: encrypted file written to <{name_out}.json> and encrypted key to <{filename}_RSA_key>")
+                if password is None:
+                    with open(f"{filename}_CBC_key", "wb") as output_file:
+                        output_file.write(key)
+                        widget_console(
+                            f"Success: encrypted file written to <{name_out}.json> and key to <{filename}_CBC_key> in Results folder")
+                else:
+                    widget_console(f"Success: encrypted file written to <{name_out}.json> in Results folder")
 
             else:
                 with open(f"{name_out}{extension}", "wb") as output_file:
                     output_file.write(message)
-                    widget_console(f"Success: decrypted file written to <{name_out}>")
+                    widget_console(f"Success: decrypted file written to <{name_out}> in Results folder")
 
-        else:
-            widget_console(
-                "Error: You cannot perform sym. while selecting an asym. cipher, please deselect"
-                " the asym. cipher if you aim to perform a sym. encryption/decryption or check the asym. checkbox!")
+            widget_password_reset()
 
-        widget_password_reset()
-
-    elif clicked_asym.get() == 'RSA-OAEP' and clicked_sym.get() == 'GCM':
-        if not is_sym.get():
+        # GCM cipher handler
+        elif clicked_sym.get() == 'GCM' and clicked_asym.get() == "Select Asymmetric cipher":
             if is_encrypt.get():
-                message, key = rsa_oaep_encryption(content, key_public, filename, file_extension)
-                name_out = f"{filename}_RSA-OAEP_encrypt"
+                if password is not None:
+                    message = gcm_encrypt(content, password, filename, file_extension)
+                    name_out = f"{filename}_GCM_encrypt"
+                else:
+                    message, key = gcm_encrypt(content, password, filename, file_extension)
+                    name_out = f"{filename}_GCM_encrypt"
             else:
-                message, filename_dec, extension = rsa_oaep_decryption(content, key, key_private)
-                name_out = f"{filename_dec}_RSA-OAEP_decrypt"
+                if password is not None:
+                    message, filename_dec, extension = gcm_decrypt(content, password)
+                    name_out = f"{filename_dec}_GCM_decrypt"
+                else:
+                    message, filename_dec, extension = gcm_decrypt(content, key)
+                    name_out = f"{filename_dec}_GCM_decrypt"
 
             # Write the result to a new text or json file
             if is_encrypt.get():
                 with open(f"{name_out}.json", "w") as output_file:
                     output_file.write(message)
 
-                with open(f"{filename}_RSA-OAEP_key", "w") as output_file:
-                    output_file.write(str(key))
-                    widget_console(
-                        f"Success: encrypted file written to <{name_out}.json> and encrypted key to <{filename}_RSA-OAEP_key>")
+                if password is None:
+                    with open(f"{filename}_GCM_key", "wb") as output_file:
+                        output_file.write(key)
+                        widget_console(
+                            f"Success: encrypted file written to <{name_out}.json> and key to <{filename}_GCM_key> in Results folder")
+                else:
+                    widget_console(f"Success: encrypted file written to <{name_out}.json> in Results folder")
 
             else:
                 with open(f"{name_out}{extension}", "wb") as output_file:
                     output_file.write(message)
-                    widget_console(f"Success: decrypted file written to <{name_out}>")
+                    widget_console(f"Success: decrypted file written to <{name_out}> in Results folder")
 
+            widget_password_reset()
+
+        elif clicked_asym.get() == 'RSA' and clicked_sym.get() == 'GCM':
+            if not is_sym.get():
+                if is_encrypt.get():
+                    message, key = rsa_encryption(content, key_public, filename, file_extension)
+                    name_out = f"{filename}_RSA_encrypt"
+                else:
+                    message, filename_dec, extension = rsa_decryption(content, key, key_private)
+                    name_out = f"{filename_dec}_RSA_decrypt"
+
+                # Write the result to a new text or json file
+                if is_encrypt.get():
+                    with open(f"{name_out}.json", "w") as output_file:
+                        output_file.write(message)
+
+                    with open(f"{filename}_RSA_key", "w") as output_file:
+                        output_file.write(str(key))
+                        widget_console(
+                            f"Success: encrypted file written to <{name_out}.json> and encrypted key to <{filename}_RSA_key> in Results folder")
+
+                else:
+                    with open(f"{name_out}{extension}", "wb") as output_file:
+                        output_file.write(message)
+                        widget_console(f"Success: decrypted file written to <{name_out}> in Results folder")
+
+            else:
+                widget_console(
+                    "Error: You cannot perform sym. while selecting an asym. cipher, please deselect"
+                    " the asym. cipher if you aim to perform a sym. encryption/decryption or check the asym. checkbox!")
+
+            widget_password_reset()
+
+        elif clicked_asym.get() == 'RSA-OAEP' and clicked_sym.get() == 'GCM':
+            if not is_sym.get():
+                if is_encrypt.get():
+                    message, key = rsa_oaep_encryption(content, key_public, filename, file_extension)
+                    name_out = f"{filename}_RSA-OAEP_encrypt"
+                else:
+                    message, filename_dec, extension = rsa_oaep_decryption(content, key, key_private)
+                    name_out = f"{filename_dec}_RSA-OAEP_decrypt"
+
+                # Write the result to a new text or json file
+                if is_encrypt.get():
+                    with open(f"{name_out}.json", "w") as output_file:
+                        output_file.write(message)
+
+                    with open(f"{filename}_RSA-OAEP_key", "w") as output_file:
+                        output_file.write(str(key))
+                        widget_console(
+                            f"Success: encrypted file written to <{name_out}.json> and encrypted key to <{filename}_RSA-OAEP_key> in Results folder")
+
+                else:
+                    with open(f"{name_out}{extension}", "wb") as output_file:
+                        output_file.write(message)
+                        widget_console(f"Success: decrypted file written to <{name_out}> in Results folder")
+
+            else:
+                widget_console(
+                    "Error: You cannot perform sym. while selecting an asym. cipher, please deselect"
+                    " the asym. cipher if you aim to perform a sym. encryption/decryption or check the asym. checkbox!")
+
+            widget_password_reset()
+
+        # wrong events handlers
         else:
-            widget_console(
-                "Error: You cannot perform sym. while selecting an asym. cipher, please deselect"
-                " the asym. cipher if you aim to perform a sym. encryption/decryption or check the asym. checkbox!")
+            if is_sym.get() and is_encrypt.get():
+                widget_console("Error: Select ONLY a symmetric cipher and upload the file before proceeding!")
 
-        widget_password_reset()
+            elif not is_sym.get() and is_encrypt.get():
+                widget_console(
+                    "Error: Select an AEAD symmetric cipher, an asymmetric cipher and upload the file and public key"
+                    " before proceeding!")
 
-    # wrong events handlers
-    else:
-        if is_sym.get() and is_encrypt.get():
-            widget_console("Error: Select ONLY a symmetric cipher and upload the file before proceeding!")
+            elif is_sym.get() and not is_encrypt.get():
+                widget_console(
+                    "Error: Select a symmetric cipher and upload the key and encrypted file you want to decrypt"
+                    " before proceeding!")
 
-        elif not is_sym.get() and is_encrypt.get():
-            widget_console(
-                "Error: Select an AEAD symmetric cipher, an asymmetric cipher and upload the file and public key"
-                " before proceeding!")
-
-        elif is_sym.get() and not is_encrypt.get():
-            widget_console("Error: Select a symmetric cipher and upload the key and encrypted file you want to decrypt"
-                           " before proceeding!")
-
-        elif not is_sym.get() and not is_encrypt.get():
-            widget_console(
-                "Error: Select an AEAD sym + asym. cipher and upload the encrypted file you want to decrypt, "
-                "the encrypted key and the private key before proceeding!")
+            elif not is_sym.get() and not is_encrypt.get():
+                widget_console(
+                    "Error: Select an AEAD sym + asym. cipher and upload the encrypted file you want to decrypt, "
+                    "the encrypted key and the private key before proceeding!")
+        os.chdir(parent_directory)
+    except Exception:
+        os.chdir(parent_directory)
+        return widget_console("Error: you are trying to use the program in the wrong way, please read the instructions "
+                              "by selecting the button on the upper right corner.")
 
 
 if __name__ == '__main__':
@@ -433,7 +450,7 @@ if __name__ == '__main__':
     extension = None
     filename = None
 
-    parent_directory = 5
+    parent_directory = os.getcwd()
 
     # Initialize pygame
     pygame.mixer.init()
