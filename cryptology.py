@@ -259,7 +259,7 @@ def start():
                 widget_console(f"Success: encrypted file written to <{name_out}.json>")
 
         else:
-            with open(f"{name_out}.{extension}", "wb") as output_file:
+            with open(f"{name_out}{extension}", "wb") as output_file:
                 output_file.write(message)
             widget_console(f"Success: decrypted file written to <{name_out}>")
 
@@ -295,7 +295,7 @@ def start():
                 widget_console(f"Success: encrypted file written to <{name_out}.json>")
 
         else:
-            with open(f"{name_out}.{extension}", "wb") as output_file:
+            with open(f"{name_out}{extension}", "wb") as output_file:
                 output_file.write(message)
                 widget_console(f"Success: decrypted file written to <{name_out}>")
 
@@ -331,7 +331,7 @@ def start():
                 widget_console(f"Success: encrypted file written to <{name_out}.json>")
 
         else:
-            with open(f"{name_out}.{extension}", "wb") as output_file:
+            with open(f"{name_out}{extension}", "wb") as output_file:
                 output_file.write(message)
                 widget_console(f"Success: decrypted file written to <{name_out}>")
 
@@ -357,7 +357,7 @@ def start():
                         f"Success: encrypted file written to <{name_out}.json> and encrypted key to <RSA_key>")
 
             else:
-                with open(f"{name_out}.{extension}", "wb") as output_file:
+                with open(f"{name_out}{extension}", "wb") as output_file:
                     output_file.write(message)
                     widget_console(f"Success: decrypted file written to <{name_out}>")
 
@@ -388,7 +388,7 @@ def start():
                         f"Success: encrypted file written to <{name_out}.json> and encrypted key to <RSA-OAEP_key>")
 
             else:
-                with open(f"{name_out}.{extension}", "wb") as output_file:
+                with open(f"{name_out}{extension}", "wb") as output_file:
                     output_file.write(message)
                     widget_console(f"Success: decrypted file written to <{name_out}>")
 

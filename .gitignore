@@ -160,3 +160,10 @@ Crypto_8-bit/Untitled.png
 Crypto_8-bit/warframe mods.txt
 Untitled.png
 warframe mods.txt
+crypto_env/pyvenv.cfg
+crypto_env/Scripts/activate
+crypto_env/Scripts/activate.bat
+crypto_env/Scripts/Activate.ps1
+crypto_env/Scripts/deactivate.bat
+crypto_env/Scripts/python.exe
+crypto_env/Scripts/pythonw.exe
