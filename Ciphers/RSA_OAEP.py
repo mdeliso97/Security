@@ -2,7 +2,7 @@ import hashlib
 import json
 import os
 
-from Utilities import codificator
+from Utilities.codificator import decoding64
 from math import ceil
 from Ciphers.GCM import gcm_encrypt, gcm_decrypt
 
@@ -45,7 +45,7 @@ def xor_operation(data, mask):
 
 
 # RSA-OAEP encryption using GCM cipher
-def rsa_oaep_encryption(file, json_pub):
+def rsa_oaep_encryption(file, json_pub, extension):
     # retrieve n and public key for encryption
     json_pub = json.loads(json_pub)
 
@@ -84,7 +84,7 @@ def rsa_oaep_encryption(file, json_pub):
     file_oaep = b'\x00' + masked_seed + file_masked
 
     # retrieve GCM AEAD cipher's outputs: ciphertext, nonce, tag and key
-    json_output, key = gcm_encrypt(file_oaep, password)
+    json_output, key = gcm_encrypt(file_oaep, password, extension)
 
     # convert GCM key from integer into byte string
     key = int.from_bytes(key, byteorder='little')
@@ -113,10 +113,10 @@ def rsa_oaep_decryption(json_file, key_encrypt, json_key_private):
     decrypt_key = pow(key_encrypt, private_key, n_key)
 
     # convert decrypted GCM key from integer to byte string
-    decrypt_key = codificator.decoding64(decrypt_key)
+    decrypt_key = decoding64(decrypt_key)
 
     # decrypt ciphertext with GCM AEAD using decrypted key
-    file_decrypted = gcm_decrypt(json_file, decrypt_key)
+    file_decrypted, extension = gcm_decrypt(json_file, decrypt_key)
 
     # oaep revert masking + hashing
     label = b''
@@ -147,4 +147,4 @@ def rsa_oaep_decryption(json_file, key_encrypt, json_key_private):
         else:
             raise Exception()
     file_raw = file_masked[i:]
-    return file_raw
+    return file_raw, extension

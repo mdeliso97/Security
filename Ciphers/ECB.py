@@ -1,9 +1,11 @@
+import json
+
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
 from Crypto.Util.Padding import unpad
 from Crypto.Random import get_random_bytes
-
 from Utilities import codificator
+from Utilities.codificator import encoding64, decoding64
 
 '''
 This class defines the logic of ECB symmetric encryption and decryption.
@@ -11,7 +13,7 @@ This class defines the logic of ECB symmetric encryption and decryption.
 
 
 # ECB encryption
-def ecb_encrypt(file, password):
+def ecb_encrypt(file, password, extension):
     BLOCK_SIZE = 32  # Bytes
 
     if password is None:
@@ -29,27 +31,38 @@ def ecb_encrypt(file, password):
     # perform padding and after encrypt plaintext
     encrypted_text = cipher.encrypt(pad(file, BLOCK_SIZE))
 
+    # convert to string ciphertext
+    ct_key = encoding64(encrypted_text)
+
+    json_output = json.dumps({'ciphertext': ct_key, 'extension': extension})
+
     if password is None:
-        return encrypted_text, key
+        return json_output, key
     else:
-        return encrypted_text
+        return json_output
 
 
 # ECB decryption
-def ecb_decrypt(message, key):
+def ecb_decrypt(json_file, key):
     BLOCK_SIZE = 32  # Bytes
 
     if not isinstance(key, (bytes, bytearray)):
         key = codificator.decoding64(key)
         key = pad(key, BLOCK_SIZE)
 
+    json_file = json.loads(json_file)
+
+    # retrieve initialization vector and ciphertext from json file
+    ct_key = decoding64(json_file['ciphertext'])
+    extension = json_file['extension']
+
     # define ECB decipher with key
     decipher = AES.new(key, AES.MODE_ECB)
 
     # decrypt ciphertext
-    decrypted_text = decipher.decrypt(message)
+    decrypted_text = decipher.decrypt(ct_key)
 
     # unpad decrypted ciphertext
     decrypted_text = unpad(decrypted_text, BLOCK_SIZE)
 
-    return decrypted_text
+    return decrypted_text, extension
