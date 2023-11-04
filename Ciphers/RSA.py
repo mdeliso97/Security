@@ -10,11 +10,11 @@ symmetric cipher.
 
 
 # RSA encryption using GCM cipher
-def rsa_encryption(file, json_pub, extension):
+def rsa_encryption(file, json_pub, filename, extension):
     password = None
 
     # retrieve GCM AEAD cipher's outputs: ciphertext, nonce, tag and key
-    json_output, key = gcm_encrypt(file, password, extension)
+    json_output, key = gcm_encrypt(file, password, filename, extension)
 
     json_pub = json.loads(json_pub)
 
@@ -52,6 +52,6 @@ def rsa_decryption(json_file, key_encrypt, json_key_private):
     decrypt_key = decoding64(decrypt_key)
 
     # decrypt ciphertext with GCM AEAD using decrypted key
-    key_decrypted, extension = gcm_decrypt(json_file, decrypt_key)
+    key_decrypted, filename, extension = gcm_decrypt(json_file, decrypt_key)
 
-    return key_decrypted, extension
+    return key_decrypted, filename, extension

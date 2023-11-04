@@ -73,11 +73,14 @@ def open_file():
     global content
     global key
     global file_extension
+    global filename
 
     file_path = filedialog.askopenfilename(
         title="Select a file", filetypes=[("All Files", "*.*")])  # Specify file types
 
-    file_extension = os.path.splitext(os.path.basename(file_path))[1]
+    if is_encrypt:
+        filename = os.path.splitext(os.path.basename(file_path))[0]
+        file_extension = os.path.splitext(os.path.basename(file_path))[1]
 
     if file_path and is_encrypt and not file_path.endswith(".json"):
         widget_console("Success: file to be encrypted uploaded!")
@@ -234,27 +237,27 @@ def start():
 
         if is_encrypt.get():
             if password is not None:
-                message = ecb_encrypt(content, password, file_extension)
-                name_out = "ECB_encrypt"
+                message = ecb_encrypt(content, password, filename, file_extension)
+                name_out = f"{filename}_ECB_encrypt"
             else:
-                message, key = ecb_encrypt(content, password, file_extension)
-                name_out = "ECB_encrypt"
+                message, key = ecb_encrypt(content, password, filename, file_extension)
+                name_out = f"{filename}_ECB_encrypt"
         else:
             if password is not None:
-                message, extension = ecb_decrypt(content, password)
-                name_out = "ECB_decrypt"
+                message, filename_dec, extension = ecb_decrypt(content, password)
+                name_out = f"{filename_dec}_ECB_decrypt"
             else:
-                message, extension = ecb_decrypt(content, key)
-                name_out = "ECB_decrypt"
+                message, filename_dec, extension = ecb_decrypt(content, key)
+                name_out = f"{filename_dec}_ECB_decrypt"
 
         # Write the result to a new text file in rb format (byte string)
         if is_encrypt.get():
             with open(f"{name_out}.json", "w") as output_file:
                 output_file.write(message)
             if password is None:
-                with open("ECB_key", "wb") as output_file:
+                with open(f"{filename}_ECB_key", "wb") as output_file:
                     output_file.write(key)
-                    widget_console(f"Success: encrypted file written to <{name_out}.json> and key to <ECB_key>")
+                    widget_console(f"Success: encrypted file written to <{name_out}.json> and key to <{filename}_ECB_key>")
             else:
                 widget_console(f"Success: encrypted file written to <{name_out}.json>")
 
@@ -269,18 +272,18 @@ def start():
     elif clicked_sym.get() == "CBC" and clicked_asym.get() == "Select Asymmetric cipher":
         if is_encrypt.get():
             if password is not None:
-                message = cbc_encrypt(content, password, file_extension)
-                name_out = "CBC_encrypt"
+                message = cbc_encrypt(content, password, filename, file_extension)
+                name_out = f"{filename}_CBC_encrypt"
             else:
-                message, key = cbc_encrypt(content, password, file_extension)
-                name_out = "CBC_encrypt"
+                message, key = cbc_encrypt(content, password, filename, file_extension)
+                name_out = f"{filename}_CBC_encrypt"
         else:
             if password is not None:
-                message, extension = cbc_decrypt(content, password)
-                name_out = "CBC_decrypt"
+                message, filename_dec, extension = cbc_decrypt(content, password)
+                name_out = f"{filename_dec}_CBC_decrypt"
             else:
-                message, extension = cbc_decrypt(content, key)
-                name_out = "CBC_decrypt"
+                message, filename_dec, extension = cbc_decrypt(content, key)
+                name_out = f"{filename_dec}_CBC_decrypt"
 
         # Write the result to a new text or json file
         if is_encrypt.get():
@@ -288,9 +291,9 @@ def start():
                 output_file.write(message)
 
             if password is None:
-                with open("CBC_key", "wb") as output_file:
+                with open(f"{filename}_CBC_key", "wb") as output_file:
                     output_file.write(key)
-                    widget_console(f"Success: encrypted file written to <{name_out}.json> and key to <CBC_key>")
+                    widget_console(f"Success: encrypted file written to <{name_out}.json> and key to <{filename}_CBC_key>")
             else:
                 widget_console(f"Success: encrypted file written to <{name_out}.json>")
 
@@ -305,18 +308,18 @@ def start():
     elif clicked_sym.get() == 'GCM' and clicked_asym.get() == "Select Asymmetric cipher":
         if is_encrypt.get():
             if password is not None:
-                message = gcm_encrypt(content, password, file_extension)
-                name_out = "GCM_encrypt"
+                message = gcm_encrypt(content, password, filename, file_extension)
+                name_out = f"{filename}_GCM_encrypt"
             else:
-                message, key = gcm_encrypt(content, password, file_extension)
-                name_out = "GCM_encrypt"
+                message, key = gcm_encrypt(content, password, filename, file_extension)
+                name_out = f"{filename}_GCM_encrypt"
         else:
             if password is not None:
-                message, extension = gcm_decrypt(content, password)
-                name_out = "GCM_decrypt"
+                message, filename_dec, extension = gcm_decrypt(content, password)
+                name_out = f"{filename_dec}_GCM_decrypt"
             else:
-                message, extension = gcm_decrypt(content, key)
-                name_out = "GCM_decrypt"
+                message, filename_dec, extension = gcm_decrypt(content, key)
+                name_out = f"{filename_dec}_GCM_decrypt"
 
         # Write the result to a new text or json file
         if is_encrypt.get():
@@ -324,9 +327,9 @@ def start():
                 output_file.write(message)
 
             if password is None:
-                with open("GCM_key", "wb") as output_file:
+                with open(f"{filename}_GCM_key", "wb") as output_file:
                     output_file.write(key)
-                    widget_console(f"Success: encrypted file written to <{name_out}.json> and key to <GCM_key>")
+                    widget_console(f"Success: encrypted file written to <{name_out}.json> and key to <{filename}_GCM_key>")
             else:
                 widget_console(f"Success: encrypted file written to <{name_out}.json>")
 
@@ -340,21 +343,21 @@ def start():
     elif clicked_asym.get() == 'RSA' and clicked_sym.get() == 'GCM':
         if not is_sym.get():
             if is_encrypt.get():
-                message, key = rsa_encryption(content, key_public, file_extension)
-                name_out = "RSA_encrypt"
+                message, key = rsa_encryption(content, key_public, filename, file_extension)
+                name_out = f"{filename}_RSA_encrypt"
             else:
-                message, extension = rsa_decryption(content, key, key_private)
-                name_out = "RSA_decrypt"
+                message, filename_dec, extension = rsa_decryption(content, key, key_private)
+                name_out = f"{filename_dec}_RSA_decrypt"
 
             # Write the result to a new text or json file
             if is_encrypt.get():
                 with open(f"{name_out}.json", "w") as output_file:
                     output_file.write(message)
 
-                with open("RSA_key", "w") as output_file:
+                with open(f"{filename}_RSA_key", "w") as output_file:
                     output_file.write(str(key))
                     widget_console(
-                        f"Success: encrypted file written to <{name_out}.json> and encrypted key to <RSA_key>")
+                        f"Success: encrypted file written to <{name_out}.json> and encrypted key to <{filename}_RSA_key>")
 
             else:
                 with open(f"{name_out}{extension}", "wb") as output_file:
@@ -371,21 +374,21 @@ def start():
     elif clicked_asym.get() == 'RSA-OAEP' and clicked_sym.get() == 'GCM':
         if not is_sym.get():
             if is_encrypt.get():
-                message, key = rsa_oaep_encryption(content, key_public, file_extension)
-                name_out = "RSA-OAEP_encrypt"
+                message, key = rsa_oaep_encryption(content, key_public, filename, file_extension)
+                name_out = f"{filename}_RSA-OAEP_encrypt"
             else:
-                message, extension = rsa_oaep_decryption(content, key, key_private)
-                name_out = "RSA-OAEP_decrypt"
+                message, filename_dec, extension = rsa_oaep_decryption(content, key, key_private)
+                name_out = f"{filename_dec}_RSA-OAEP_decrypt"
 
             # Write the result to a new text or json file
             if is_encrypt.get():
                 with open(f"{name_out}.json", "w") as output_file:
                     output_file.write(message)
 
-                with open("RSA-OAEP_key", "w") as output_file:
+                with open(f"{filename}_RSA-OAEP_key", "w") as output_file:
                     output_file.write(str(key))
                     widget_console(
-                        f"Success: encrypted file written to <{name_out}.json> and encrypted key to <RSA-OAEP_key>")
+                        f"Success: encrypted file written to <{name_out}.json> and encrypted key to <{filename}_RSA-OAEP_key>")
 
             else:
                 with open(f"{name_out}{extension}", "wb") as output_file:
@@ -428,6 +431,9 @@ if __name__ == '__main__':
     is_volume_on = True
     file_extension = None
     extension = None
+    filename = None
+
+    parent_directory = 5
 
     # Initialize pygame
     pygame.mixer.init()

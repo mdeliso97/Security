@@ -11,7 +11,7 @@ This class defines the logic of AEAD AES-GCM symmetric encryption and decryption
 
 
 # GCM encryption
-def gcm_encrypt(file, password, extension):
+def gcm_encrypt(file, password, filename, extension):
     BLOCK_SIZE = 32
 
     if password is None:
@@ -37,7 +37,8 @@ def gcm_encrypt(file, password, extension):
     nonce_key = encoding64(nonce_key)
 
     # store nonce, tag and ciphertext into a json file
-    json_output = json.dumps({'nonce': nonce_key, 'tag': tag_key, 'ciphertext': ct_key, 'extension': extension})
+    json_output = json.dumps(
+        {'nonce': nonce_key, 'tag': tag_key, 'ciphertext': ct_key, 'filename': filename, 'extension': extension})
 
     if password is None:
         return json_output, key
@@ -59,6 +60,7 @@ def gcm_decrypt(json_file, key):
     key_nonce = decoding64(json_file['nonce'])
     key_tag = decoding64(json_file['tag'])
     key_ct = decoding64(json_file['ciphertext'])
+    filename = json_file['filename']
     extension = json_file['extension']
 
     # define decipher and couple it with nonce byte string
@@ -67,4 +69,4 @@ def gcm_decrypt(json_file, key):
     # decrypt ciphertext
     file_decrypted = decipher.decrypt_and_verify(key_ct, key_tag)
 
-    return file_decrypted, extension
+    return file_decrypted, filename, extension
