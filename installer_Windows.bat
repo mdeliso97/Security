@@ -1,36 +1,36 @@
 @echo off
 
-parent_dir="$(pwd)"
+set parent_dir=%CD%
 
-python_version="3.9.13"
+set python_version=3.9.13
 
-python_path="$parent_dir/Utilities"
+set python_path="%parent_dir%/Utilities"
 
-cd Utilities/Python-$python_version
+cd %python_path%
 
 echo Extract the source code...
 
-tar -xvf Python-$python_version.tgz
+tar -xvf Python-%python_version%.tgz
 
-echo Configure, build, and install Python
+echo configure, build, and install Python...
 
-./configure --prefix=$python_path
+./configure --prefix=%python_path%
 
-make
+echo Install Python...
 
-sudo make install
+start /wait python-%python_version%-amd64.exe /quiet TargetDir=%python_path%
 
-echo completed installation of Python $python_version
+echo completed installation of Python %python_version%
 
 echo clean up
 
-cd ..
+cd %python_path%
 
-rm -rf Python-$python_version
+rm -rf Python-%python_version%
 
-rm Python-$python_version.tgz
+rm Python-%python_version%.tgz
 
-cd $parent_dir
+cd %parent_dir%
 
 
 
@@ -44,7 +44,11 @@ echo activating virtual environment...
 
 call crypto_env\Scripts\activate.bat
 
-echo complete
+:: Add the Python installation path to the PATH
+
+set PATH=%python_path%;%PATH%
+
+echo Activation complete
 
 echo install dependencies...
 
@@ -52,12 +56,12 @@ pip install -r requirements.txt
 
 echo complete
 
-REM Create a new batch file
+:: Create a new batch file for running the application
+
 (
   echo @echo off
   echo echo Activating virtual environment...
   echo call crypto_env\Scripts\activate.bat
-  echo export PATH="$python_path:$PATH"
   echo echo Activation complete.
   echo echo Start application...
   echo python cryptology.py
