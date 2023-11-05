@@ -4,35 +4,27 @@ set parent_dir=%CD%
 
 set python_version=3.9.13
 
-set python_path="%parent_dir%/Utilities"
+set python_path=%parent_dir%/Utilities
+
+:: Start installation of the correct version of Python
 
 cd %python_path%
 
-echo Extract the source code...
-
-tar -xvf Python-%python_version%.tgz
-
-echo configure, build, and install Python...
-
-./configure --prefix=%python_path%
-
 echo Install Python...
 
-start /wait python-%python_version%-amd64.exe /quiet TargetDir=%python_path%
+python-%python_version%-amd64.exe /quiet InstallAllUsers=1 PrependPath=1 Include_test=0
 
 echo completed installation of Python %python_version%
 
 echo clean up
 
-cd %python_path%
+rm /q python-%python_version%-amd64.exe
 
-rm -rf Python-%python_version%
-
-rm Python-%python_version%.tgz
+rmdir /s /q Python-%python_version%.tgz
 
 cd %parent_dir%
 
-
+:: Start installation of the working environment
 
 echo Initializing virtual environment...
 
@@ -49,6 +41,8 @@ call crypto_env\Scripts\activate.bat
 set PATH=%python_path%;%PATH%
 
 echo Activation complete
+
+:: Add all dependencies to the virtual environment
 
 echo install dependencies...
 
