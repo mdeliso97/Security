@@ -18,9 +18,9 @@ echo completed installation of Python %python_version%
 
 echo clean up
 
-rm /q python-%python_version%-amd64.exe
+del /q python-%python_version%-amd64.exe
 
-rmdir /s /q Python-%python_version%.tgz
+del /q Python-%python_version%.tgz
 
 cd %parent_dir%
 
