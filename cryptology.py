@@ -1,6 +1,7 @@
 import tkinter as tk
 import pygame
 import os
+import zipfile
 
 from Utilities import keygen
 from tkinter import filedialog, messagebox
@@ -17,6 +18,14 @@ and defines uploading of files when required for specific action. The program is
 file is given as input and comes with different ciphers that can be applied: ECM, CBC, GCM AEAD, RSA and RSA-OAEP (still
 in progress).
 '''
+
+
+# changes the name of source button dynamically
+def update_button_source():
+    global is_directory
+
+    new_text = "Source File" if is_directory.get() else "Source Directory"
+    button_file.config(text=new_text)
 
 
 # allows printing new text in the widget console by unlocking and locking console state
@@ -74,9 +83,13 @@ def open_file():
     global key
     global file_extension
     global filename
+    global is_directory
 
-    file_path = filedialog.askopenfilename(
-        title="Select a file", filetypes=[("All Files", "*.*")])  # Specify file types
+    if not is_directory.get():
+        file_path = filedialog.askdirectory(title="Select a directory")  # Specify directory
+    else:
+        file_path = filedialog.askopenfilename(
+            title="Select a file", filetypes=[("All Files", "*.*")])  # Specify file
 
     if is_encrypt:
         filename = os.path.splitext(os.path.basename(file_path))[0]
@@ -177,7 +190,7 @@ def hide_option():
         button_private.pack_forget()
         button_keygen.pack_forget()
         drop_asym.pack_forget()
-        button_key.pack(pady=5, after=button_file)
+        button_key.pack(pady=5, after=frame_search_type)
         drop_sym.pack(pady=10, after=checkbox_encryption)
         frame_password.pack(after=checkbox_encryption, pady=10)
         text_widget1.pack(side=tk.LEFT, padx=10)
@@ -192,7 +205,7 @@ def hide_option():
         frame_password.pack_forget()
         drop_asym.pack(pady=10, after=checkbox_encryption)
         button_keygen.pack(pady=10, before=drop_asym)
-        button_public.pack(pady=5, after=button_file)
+        button_public.pack(pady=5, after=frame_search_type)
     elif not is_encrypt.get() and not is_sym.get():
         button_public.pack_forget()
         drop_sym.pack_forget()
@@ -201,7 +214,7 @@ def hide_option():
         frame_password.pack_forget()
         drop_asym.pack(pady=10, after=checkbox_encryption)
         button_keygen.pack(pady=10, before=drop_asym)
-        button_key.pack(pady=5, after=button_file)
+        button_key.pack(pady=5, after=frame_search_type)
         button_private.pack(pady=5, after=button_key)
 
 
@@ -467,6 +480,7 @@ if __name__ == '__main__':
     clicked_asym = tk.StringVar()
     is_sym = tk.BooleanVar()
     is_encrypt = tk.BooleanVar()
+    is_directory = tk.BooleanVar(value=True)
 
     # initial drop down menus text
     clicked_sym.set("Select Symmetric cipher")
@@ -488,6 +502,7 @@ if __name__ == '__main__':
     # adds a frame containing both password widget and button to confirm it
     frame_password = tk.Frame(root)
     frame_popUp = tk.Frame(root)
+    frame_search_type = tk.Frame(root)
 
     # define widget for password input from user as key
     text_widget1 = tk.Entry(frame_password, width=20, foreground="black", show="*")
@@ -497,7 +512,7 @@ if __name__ == '__main__':
     label0 = tk.Label(root, text="Crypto 8-bit", font=("Helvetica", 24, "bold"), foreground="blue", relief=tk.SUNKEN)
 
     # define buttons and their configuration
-    button_file = tk.Button(root, text="Source File", command=open_file)
+    button_file = tk.Button(frame_search_type, text="Source File", command=open_file)
     button_key = tk.Button(root, text="Source Key", command=source_key)
     button_exit = tk.Button(root, text="Exit", command=on_closing)
     button_start = tk.Button(root, text="Start", command=start)
@@ -516,6 +531,8 @@ if __name__ == '__main__':
                                         command=hide_option)
     checkbox_encryption = tk.Checkbutton(root, text="Checked encrypt. / Unchecked decrypt.", variable=is_encrypt,
                                          command=hide_option)
+    checkbox_file_directory = tk.Checkbutton(frame_search_type, variable=is_directory, command=update_button_source)
+
     button_popUp_info.pack(padx=10)
     button_volume.pack(padx=10)
     button_popUp_info.place(x=280, y=10)
@@ -525,7 +542,9 @@ if __name__ == '__main__':
     checkbox_encryption.pack(pady=0)
     button_keygen.pack(pady=10)
     drop_asym.pack(pady=10)
-    button_file.pack(pady=5)
+    frame_search_type.pack()
+    button_file.pack(padx=10, pady=5, side=tk.LEFT)
+    checkbox_file_directory.pack(pady=5, side=tk.RIGHT)
     button_key.pack(pady=5)
     button_private.pack(pady=5)
     button_start.pack(pady=10)
