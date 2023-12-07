@@ -1,7 +1,6 @@
 import tkinter as tk
 import pygame
 import os
-import zipfile
 
 from Utilities import keygen
 from tkinter import filedialog, messagebox
