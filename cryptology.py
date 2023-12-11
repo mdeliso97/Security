@@ -10,6 +10,7 @@ from Ciphers.GCM import gcm_encrypt, gcm_decrypt
 from Ciphers.RSA_OAEP import rsa_oaep_encryption, rsa_oaep_decryption
 from Ciphers.RSA import rsa_encryption, rsa_decryption
 from Utilities.dialog_message import dialog_message
+from Utilities.zip import zip_file, unzip_file
 
 '''
 This class is the main of Crypto 8-bit, defines all the GUI elements and initiates them, handles all different ciphers
@@ -86,16 +87,21 @@ def open_file():
 
     if not is_directory.get():
         file_path = filedialog.askdirectory(title="Select a directory")  # Specify directory
+        file_path = zip_file(file_path)
+
     else:
         file_path = filedialog.askopenfilename(
             title="Select a file", filetypes=[("All Files", "*.*")])  # Specify file
 
-    if is_encrypt:
+    if is_encrypt.get():
         filename = os.path.splitext(os.path.basename(file_path))[0]
         file_extension = os.path.splitext(os.path.basename(file_path))[1]
 
-    if file_path and is_encrypt and not file_path.endswith(".json"):
-        widget_console("Success: file to be encrypted uploaded!")
+    if file_path and is_encrypt.get() and not file_path.endswith(".json"):
+        if not is_directory.get():
+            widget_console(f"A zipped copy of your folder {file_path} has been generated for encryption")
+        else:
+            widget_console("Success: file to be encrypted uploaded!")
 
         with open(file_path, "rb") as file:
             content = file.read()
@@ -358,8 +364,13 @@ def start():
 
             else:
                 with open(f"{name_out}{extension}", "wb") as output_file:
+
                     output_file.write(message)
-                    widget_console(f"Success: decrypted file written to <{name_out}> in Results folder")
+
+                if extension == ".zip":
+                    unzip_file(f"{name_out}{extension}", os.getcwd())
+
+                widget_console(f"Success: decrypted file written to <{name_out}> in Results folder")
 
             widget_password_reset()
 
