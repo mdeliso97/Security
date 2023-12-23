@@ -22,9 +22,9 @@ in progress).
 
 # changes the name of source button dynamically
 def update_button_source():
-    global is_directory
+    global is_not_directory
 
-    new_text = "Source File" if is_directory.get() else "Source Directory"
+    new_text = "Source File" if is_not_directory.get() else "Source Directory"
     button_file.config(text=new_text)
 
 
@@ -66,7 +66,7 @@ def widget_password_reset():
     text_widget1.delete(0, tk.END)
 
 
-def popUp_description():
+def popup_description():
     info = dialog_message()
     messagebox.showinfo("Instructions", info)
 
@@ -83,9 +83,9 @@ def open_file():
     global key
     global file_extension
     global filename
-    global is_directory
+    global is_not_directory
 
-    if not is_directory.get():
+    if not is_not_directory.get():
         file_path = filedialog.askdirectory(title="Select a directory")  # Specify directory
         file_path = zip_file(file_path)
 
@@ -97,24 +97,27 @@ def open_file():
         filename = os.path.splitext(os.path.basename(file_path))[0]
         file_extension = os.path.splitext(os.path.basename(file_path))[1]
 
-    if file_path and is_encrypt.get() and not file_path.endswith(".json"):
-        if not is_directory.get():
-            widget_console(f"A zipped copy of your folder {file_path} has been generated for encryption")
+    if file_path:
+        if is_encrypt.get() and not file_path.endswith(".json"):
+            if not is_not_directory.get():
+                widget_console(f"A zipped copy of your folder {file_path} has been generated for encryption")
+            else:
+                widget_console("Success: file to be encrypted uploaded!")
+
+            with open(file_path, "rb") as file:
+                content = file.read()
+
+        elif not is_not_directory.get() and not is_encrypt.get() and (
+                clicked_sym.get() == "ECB", "CBC", "GCM", "RSA", "RSA-OAEP") and file_path.endswith(".json"):
+
+            widget_console("Success: file .json to be decrypted uploaded!")
+
+            with open(file_path, "r") as file:
+                content = file.read()
         else:
-            widget_console("Success: file to be encrypted uploaded!")
-
-        with open(file_path, "rb") as file:
-            content = file.read()
-
-    elif file_path.endswith(".json") and not is_encrypt.get() and (
-            clicked_sym.get() == "ECB", "CBC", "GCM", "RSA", "RSA-OAEP"):
-
-        widget_console("Success: file .json to be decrypted uploaded!")
-
-        with open(file_path, "r") as file:
-            content = file.read()
+            widget_console("Error: Wrong file format was provided!")
     else:
-        widget_console("Error: No file or wrong format was provided!")
+        widget_console("Error: No file provided!")
 
 
 # defines logic to source a key and handles wrong behaviors related to the selection of the key
@@ -490,7 +493,7 @@ if __name__ == '__main__':
     clicked_asym = tk.StringVar()
     is_sym = tk.BooleanVar()
     is_encrypt = tk.BooleanVar()
-    is_directory = tk.BooleanVar(value=True)
+    is_not_directory = tk.BooleanVar(value=True)
 
     # initial drop down menus text
     clicked_sym.set("Select Symmetric cipher")
@@ -530,7 +533,7 @@ if __name__ == '__main__':
     button_private = tk.Button(root, text="Source Private Key", command=source_private_key)
     button_keygen = tk.Button(root, text="Keygen", command=keygen_exe)
     button_password = tk.Button(frame_password, text="Confirm", command=widget_password)
-    button_popUp_info = tk.Button(root, text="(i)", command=popUp_description)
+    button_popUp_info = tk.Button(root, text="(i)", command=popup_description)
 
     # define button for volume toggle off/on
     button_volume = tk.Button(root, image=volume_on, command=volume_toggler)
@@ -541,7 +544,7 @@ if __name__ == '__main__':
                                         command=hide_option)
     checkbox_encryption = tk.Checkbutton(root, text="Checked encrypt. / Unchecked decrypt.", variable=is_encrypt,
                                          command=hide_option)
-    checkbox_file_directory = tk.Checkbutton(frame_search_type, variable=is_directory, command=update_button_source)
+    checkbox_file_directory = tk.Checkbutton(frame_search_type, variable=is_not_directory, command=update_button_source)
 
     button_popUp_info.pack(padx=10)
     button_volume.pack(padx=10)
