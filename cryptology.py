@@ -107,7 +107,7 @@ def open_file():
             with open(file_path, "rb") as file:
                 content = file.read()
 
-        elif not is_not_directory.get() and not is_encrypt.get() and (
+        elif is_not_directory.get() and not is_encrypt.get() and (
                 clicked_sym.get() == "ECB", "CBC", "GCM", "RSA", "RSA-OAEP") and file_path.endswith(".json"):
 
             widget_console("Success: file .json to be decrypted uploaded!")
