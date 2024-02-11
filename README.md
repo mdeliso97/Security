@@ -32,6 +32,8 @@ Finally, ```installer_Windows.bat``` and ```installer_Linux.sh``` are scripts fo
 
 The symmetric key is randomized if the user does not provide any password, since in this program, the user is allowed to choose the encryption/decryption key.
 
+It is recommended to use the auto installer for a soft installation, hence a local installation all-in-one in the folder.
+
 ## How to run the program
 
 ### Using auto installer (Windows + Linux)
@@ -58,7 +60,7 @@ The program should start automatically.
 
 To install correctly this program, you will need to install Python 3.9.13 version or later, see [Python 3.9.13 for Windows](https://www.python.org/downloads/windows/), scroll down until you find the correct version compatible with your system.
 
-For the direct installation link, follow hereafter:
+For the direct download link, follow hereafter:
 
 [Python 3.9.13 for macOS](https://www.python.org/ftp/python/3.9.13/python-3.9.13-macos11.pkg)
 
@@ -106,7 +108,7 @@ Run the program by executing `cryptology.py`:
 
 To install correctly this program, you will need to install Python 3.9.13 version or later, see [Python 3.9.13 for Windows](https://www.python.org/downloads/windows/), scroll down until you find the correct version compatible with your system.
 
-For the direct installation link, follow hereafter:
+For the direct download link, follow hereafter:
 
 [Python 3.9.13 for macOS](https://www.python.org/ftp/python/3.9.13/python-3.9.13-macos11.pkg)
 
@@ -116,7 +118,7 @@ For the direct installation link, follow hereafter:
 
 [Python 3.9.13 for Linux/Unix](https://www.python.org/ftp/python/3.9.13/Python-3.9.13.tgz)
 
-As soon as you start the installer, make sure to check the checkbox ***Add python 3.9.13 to PATH***. To check whether the installation was successfully, restart your system, open a terminal and write `python --version`, if it outputs `python 3.9.13`, you successfully installed the version.
+As soon as you start the installer, make sure to check the checkbox ***Add python 3.9.13 to PATH***. To check whether the installation was successful, restart your system, open a terminal, and write `python --version`, if it outputs `python 3.9.13`, you successfully installed the version.
 
 #### 1. Import Project
 
