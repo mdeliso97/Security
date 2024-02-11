@@ -1,10 +1,28 @@
 # Crypto 8-bit
 
-Welcome to Crypto 8-bit project, a cryptology project 
+Welcome to the Crypto 8-bit project!
+
+## What is Crypto 8-bit
+
+Crypto 8-bit is a small utility program that guides and helps users to encrypt/decrypt files or folders by using some of the most used ciphers nowadays: ECB, CBC, GCM, RSA, and RSA OAEP. The program gives the user full choice of the encryption approach, namely Symmetric Encryption or Asymmetric Encryption.
+
+## How to use Crypto 8-bit
+
+#### Guide through the UI
+
+TBD
+
+#### Example use Case
+
+TBD
+
+#### Further Insights
+
+TBD
 
 ## Instructions to getting started with the project
 
-The Crypto 8-bit program has a main file which is called  ```cryptology.py```. The program, when started has an interactive GUI that allows Users to encrypt or decrypt by selecting their preferences between symmetric cipher and asymmetric cipher.
+The Crypto 8-bit program has a main file called  ```cryptology.py```. The program, when started has an interactive GUI that allows Users to encrypt or decrypt by selecting their preferences between symmetric cipher and asymmetric cipher.
 
 The ```codificator.py``` and ```RSA_Keygen.py``` are utility classes, the first one holds methods to decode or encode from string or integer to byte format by taking the text file as input, depending on the needs. The second class becomes fundamental for the asymmetric cipher to produce keys. If the User does not have a public and private key, he can through the ```keygen``` button in the GUI generate a pair.
 
@@ -18,29 +36,15 @@ The symmetric key is randomized if the user does not provide any password, since
 
 ### Using auto installer (Windows + Linux)
 
-#### 0. Install Python the latest version
-
-To install correctly this program, you will need to install Python 3.9.13 version or later, see [Python 3.9.13 for Windows](https://www.python.org/downloads/windows/), scroll down until you find the correct version compatible with your system.
-
-For the direct installation link, follow hereafter:
-
-[Python 3.9.13 for macOS](https://www.python.org/ftp/python/3.9.13/python-3.9.13-macos11.pkg)
-
-[Python 3.9.13 for Windows amd64 (64-bit)](https://www.python.org/ftp/python/3.9.13/python-3.9.13-amd64.exe)
-
-[Python 3.9.13 for Windows (32-bit)](https://www.python.org/ftp/python/3.9.13/python-3.9.13.exe)
-
-As soon as you start the installer, make sure to check the checkbox ***Add python 3.9.13 to PATH***. To check whether the installation was successful, restart your system, open a terminal, and write `python --version`, if it outputs `python 3.9.13`, you successfully installed the version.
-
 #### 1. Import Project
 
 Download the GitHub repository from [Repository](https://GitHub.com/mdeliso97/Security)
 
 #### 2. Install program
 
-To install the program it is simply need to double-click on the file ```installer_Windows.bat``` or ```installer_Linux.sh```. This program will do all the installation for you and create a separate file called ```Crypto_8-bit.bat``` or ```Crypto_8-bit.sh```.
+To install the program it is simply need to double-click on the file ```installer_Windows.bat``` or ```installer_Linux.sh```. This program will do all the installation (including Python version 3.9.13) for you and create a separate file called ```Crypto_8-bit.bat``` or ```Crypto_8-bit.sh```. In addition, obsolete folders and files used for installation will be automatically uninstalled.
 
-#### 3. Run the program
+#### 4. Run the program
 
 To run the program, double-click on the file ```Crypto_8-bit.bat``` or ```Crypto_8-bit.sh```, if it does not work, open a terminal and navigate to your ```Crypto_8-bit.sh``` directory and run into your console:
 
