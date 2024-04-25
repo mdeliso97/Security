@@ -16,7 +16,7 @@ and private key. It follows the following steps:
 
 
 # outputs the key as json files
-def keygen_output(json_output_public, json_output_private):
+def keygen_output(json_output_public: json, json_output_private: json):
     with open("public_key.json", "w") as output_file:
         output_file.write(json_output_public)
 
@@ -24,18 +24,11 @@ def keygen_output(json_output_public, json_output_private):
         output_file.write(json_output_private)
 
 
-# generates two prime numbers given their length
-def primes_gen(length):
-    p = number.getPrime(length)
-    q = number.getPrime(length)
-    return p, q
-
-
 # generates private and public keys
 def keygen():
     # generate two big prime numbers of 3000 length
-    p, q = primes_gen(3000)
-
+    p = number.getPrime(3000)
+    q = number.getPrime(3000)
     # calculate modulus n
     n = p * q
 

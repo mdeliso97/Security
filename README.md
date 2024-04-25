@@ -20,7 +20,7 @@ TBD
 
 TBD
 
-## Instructions to getting started with the project
+## Instructions to get started with the project
 
 The Crypto 8-bit program has a main file called  ```cryptology.py```. The program, when started has an interactive GUI that allows Users to encrypt or decrypt by selecting their preferences between symmetric cipher and asymmetric cipher.
 

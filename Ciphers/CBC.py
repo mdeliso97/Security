@@ -6,7 +6,7 @@ from Crypto.Random import get_random_bytes
 from Utilities.codificator import *
 
 '''
-This class defines the logic of CBC symmetric encryption and decryption. 
+This class defines the logic of CBC symmetric encryption and decryption.
 '''
 
 

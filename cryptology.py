@@ -268,9 +268,26 @@ def start():
                 if password is not None:
                     message = ecb_encrypt(content, password, filename, file_extension)
                     name_out = f"{filename}_ECB_encrypt"
+
+                    # Write the result to a new text file in rb format (byte string)
+                    with open(f"{name_out}.json", "w") as output_file:
+                        output_file.write(message)
+
+                    widget_console(f"Success: encrypted file written to <{name_out}.json> in Results folder")
+
                 else:
                     message, key = ecb_encrypt(content, password, filename, file_extension)
                     name_out = f"{filename}_ECB_encrypt"
+
+                    # Write the result to a new text file in rb format (byte string)
+                    with open(f"{name_out}.json", "w") as output_file:
+                        output_file.write(message)
+
+                    with open(f"{filename}_ECB_key", "wb") as output_file:
+                        output_file.write(key)
+                        widget_console(
+                            f"Success: encrypted file written to <{name_out}.json> and key to <{filename}_ECB_key> in Results folder")
+
             else:
                 if password is not None:
                     message, filename_dec, extension = ecb_decrypt(content, password)
@@ -279,19 +296,6 @@ def start():
                     message, filename_dec, extension = ecb_decrypt(content, key)
                     name_out = f"{filename_dec}_ECB_decrypt"
 
-            # Write the result to a new text file in rb format (byte string)
-            if is_encrypt.get():
-                with open(f"{name_out}.json", "w") as output_file:
-                    output_file.write(message)
-                if password is None:
-                    with open(f"{filename}_ECB_key", "wb") as output_file:
-                        output_file.write(key)
-                        widget_console(
-                            f"Success: encrypted file written to <{name_out}.json> and key to <{filename}_ECB_key> in Results folder")
-                else:
-                    widget_console(f"Success: encrypted file written to <{name_out}.json> in Results folder")
-
-            else:
                 with open(f"{name_out}{extension}", "wb") as output_file:
                     output_file.write(message)
                 widget_console(f"Success: decrypted file written to <{name_out}> in Results folder")
@@ -304,9 +308,25 @@ def start():
                 if password is not None:
                     message = cbc_encrypt(content, password, filename, file_extension)
                     name_out = f"{filename}_CBC_encrypt"
+
+                    # Write the result to a new text or json file
+                    with open(f"{name_out}.json", "w") as output_file:
+                        output_file.write(message)
+
+                    widget_console(f"Success: encrypted file written to <{name_out}.json> in Results folder")
+
                 else:
                     message, key = cbc_encrypt(content, password, filename, file_extension)
                     name_out = f"{filename}_CBC_encrypt"
+
+                    # Write the result to a new text or json file
+                    with open(f"{name_out}.json", "w") as output_file:
+                        output_file.write(message)
+
+                    with open(f"{filename}_CBC_key", "wb") as output_file:
+                        output_file.write(key)
+                        widget_console(
+                            f"Success: encrypted file written to <{name_out}.json> and key to <{filename}_CBC_key> in Results folder")
             else:
                 if password is not None:
                     message, filename_dec, extension = cbc_decrypt(content, password)
@@ -315,20 +335,6 @@ def start():
                     message, filename_dec, extension = cbc_decrypt(content, key)
                     name_out = f"{filename_dec}_CBC_decrypt"
 
-            # Write the result to a new text or json file
-            if is_encrypt.get():
-                with open(f"{name_out}.json", "w") as output_file:
-                    output_file.write(message)
-
-                if password is None:
-                    with open(f"{filename}_CBC_key", "wb") as output_file:
-                        output_file.write(key)
-                        widget_console(
-                            f"Success: encrypted file written to <{name_out}.json> and key to <{filename}_CBC_key> in Results folder")
-                else:
-                    widget_console(f"Success: encrypted file written to <{name_out}.json> in Results folder")
-
-            else:
                 with open(f"{name_out}{extension}", "wb") as output_file:
                     output_file.write(message)
                     widget_console(f"Success: decrypted file written to <{name_out}> in Results folder")
@@ -341,9 +347,25 @@ def start():
                 if password is not None:
                     message = gcm_encrypt(content, password, filename, file_extension)
                     name_out = f"{filename}_GCM_encrypt"
+
+                    # Write the result to a new text or json file
+                    with open(f"{name_out}.json", "w") as output_file:
+                        output_file.write(message)
+
+                    widget_console(f"Success: encrypted file written to <{name_out}.json> in Results folder")
                 else:
                     message, key = gcm_encrypt(content, password, filename, file_extension)
                     name_out = f"{filename}_GCM_encrypt"
+
+                    # Write the result to a new text or json file
+                    with open(f"{name_out}.json", "w") as output_file:
+                        output_file.write(message)
+
+                    with open(f"{filename}_GCM_key", "wb") as output_file:
+                        output_file.write(key)
+                        widget_console(
+                            f"Success: encrypted file written to <{name_out}.json> and key to <{filename}_GCM_key> in Results folder")
+
             else:
                 if password is not None:
                     message, filename_dec, extension = gcm_decrypt(content, password)
@@ -352,20 +374,6 @@ def start():
                     message, filename_dec, extension = gcm_decrypt(content, key)
                     name_out = f"{filename_dec}_GCM_decrypt"
 
-            # Write the result to a new text or json file
-            if is_encrypt.get():
-                with open(f"{name_out}.json", "w") as output_file:
-                    output_file.write(message)
-
-                if password is None:
-                    with open(f"{filename}_GCM_key", "wb") as output_file:
-                        output_file.write(key)
-                        widget_console(
-                            f"Success: encrypted file written to <{name_out}.json> and key to <{filename}_GCM_key> in Results folder")
-                else:
-                    widget_console(f"Success: encrypted file written to <{name_out}.json> in Results folder")
-
-            else:
                 with open(f"{name_out}{extension}", "wb") as output_file:
 
                     output_file.write(message)
@@ -382,12 +390,8 @@ def start():
                 if is_encrypt.get():
                     message, key = rsa_encryption(content, key_public, filename, file_extension)
                     name_out = f"{filename}_RSA_encrypt"
-                else:
-                    message, filename_dec, extension = rsa_decryption(content, key, key_private)
-                    name_out = f"{filename_dec}_RSA_decrypt"
 
-                # Write the result to a new text or json file
-                if is_encrypt.get():
+                    # Write the result to a new text or json file
                     with open(f"{name_out}.json", "w") as output_file:
                         output_file.write(message)
 
@@ -395,8 +399,10 @@ def start():
                         output_file.write(str(key))
                         widget_console(
                             f"Success: encrypted file written to <{name_out}.json> and encrypted key to <{filename}_RSA_key> in Results folder")
-
                 else:
+                    message, filename_dec, extension = rsa_decryption(content, key, key_private)
+                    name_out = f"{filename_dec}_RSA_decrypt"
+
                     with open(f"{name_out}{extension}", "wb") as output_file:
                         output_file.write(message)
                         widget_console(f"Success: decrypted file written to <{name_out}> in Results folder")
@@ -413,12 +419,8 @@ def start():
                 if is_encrypt.get():
                     message, key = rsa_oaep_encryption(content, key_public, filename, file_extension)
                     name_out = f"{filename}_RSA-OAEP_encrypt"
-                else:
-                    message, filename_dec, extension = rsa_oaep_decryption(content, key, key_private)
-                    name_out = f"{filename_dec}_RSA-OAEP_decrypt"
 
-                # Write the result to a new text or json file
-                if is_encrypt.get():
+                    # Write the result to a new text or json file
                     with open(f"{name_out}.json", "w") as output_file:
                         output_file.write(message)
 
@@ -428,6 +430,9 @@ def start():
                             f"Success: encrypted file written to <{name_out}.json> and encrypted key to <{filename}_RSA-OAEP_key> in Results folder")
 
                 else:
+                    message, filename_dec, extension = rsa_oaep_decryption(content, key, key_private)
+                    name_out = f"{filename_dec}_RSA-OAEP_decrypt"
+
                     with open(f"{name_out}{extension}", "wb") as output_file:
                         output_file.write(message)
                         widget_console(f"Success: decrypted file written to <{name_out}> in Results folder")
