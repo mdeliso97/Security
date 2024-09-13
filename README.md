@@ -55,7 +55,12 @@ To install the program you simply need on **Windows** to double-click the file `
 
 To run the program, double-click on the file ```Crypto_8-bit.bat``` or ```Crypto_8-bit.sh```, if it does not work, open a terminal and navigate to your ```Crypto_8-bit.sh``` directory and run into your console:
 
-`./Crypto_8-bit.sh`. The double-click may not work sometimes in Linux machines due to default security measures or user preferences.
+`./Crypto_8-bit.sh`, in Linux system, if you have permission problems, run the following two lines:
+
+```chmod +x ./Crypto_8-bit.sh```
+```./Crypto_8-bit.sh```
+
+Make sure to be in the same folder of the file. The double-click may not work sometimes in Linux machines due to default security measures or user preferences.
 
 The program should start automatically.
 
