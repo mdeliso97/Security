@@ -6,6 +6,8 @@ python_version="3.9.13"
 
 python_path="$parent_dir/Utilities"
 
+sudo apt install python3-pip -y
+
 cd $python_path
 
 echo "extract the source code..."
