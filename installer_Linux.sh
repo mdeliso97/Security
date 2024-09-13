@@ -40,7 +40,7 @@ cd $parent_dir
 
 echo "Initializing virtual environment..."
 
-python -m venv crypto_env
+python3 -m venv crypto_env
 
 echo "Complete"
 
