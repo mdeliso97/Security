@@ -8,6 +8,18 @@ Crypto 8-bit is a small utility program that guides and helps users to encrypt/d
 
 ## How to use Crypto 8-bit
 
+#### Usage Docker
+
+sudo docker run -it \
+    -e DISPLAY \
+    -v "/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+    --device /dev/snd \
+    -e PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native \
+    -v ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native \
+    -v ~/.config/pulse/cookie:/root/.config/pulse/cookie \
+    --group-add $(getent group audio | cut -d: -f3) \
+    crypto_8-bit:1.0.2
+
 #### Guide through the UI
 
 TBD

@@ -1,24 +1,38 @@
 # base image Crypto 8-bit
 FROM ubuntu:22.04
 
-RUN cd ~ &&\
-    apt-get update -y &&\
-    apt-get upgrade -y &&\
-    apt-get install git -y &&\
-    apt-get install -y nano &&\
-    apt-get install -y sudo &&\
-    apt-get install dbus libdbus-1-3 dbus-x11 -y &&\
-    apt-get update -y &&\
-    apt-get install python3.9 python3-setuptools python3.9-dev -y &&\
-    apt-get install python3-pip -y &&\
-    apt-get install wget -y &&\
-    DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common &&\
-    git clone https://github.com/mdeliso97/Crypto_8-bit.git
 
-# install dependencies
-RUN pip3 install -r Crypto_8-bit/requirements.txt
+# Set environment to noninteractive to avoid tzdata prompts
+ENV DEBIAN_FRONTEND=noninteractive
 
-# launch crypto 8-bit
-CMD ["python3" ,"Crypto_8-bit/cryptology.py"]
+# Install system dependencies
+RUN apt-get update -y && \
+    apt-get upgrade -y && \
+    apt-get install -y \
+    software-properties-common \
+    git \
+    nano \
+    sudo \
+    dbus libdbus-1-3 dbus-x11 \
+    python3.9 \
+    python3-pip \
+    python3-tk \
+    pulseaudio \
+    alsa-utils \
+    wget && \
+    apt-get clean
+
+# Clone the repository
+RUN git clone https://github.com/mdeliso97/Crypto_8-bit.git
+
+# Set working directory to the cloned repository
+WORKDIR /Crypto_8-bit
+
+
+# Install Python dependencies
+RUN pip3 install -r requirements.txt
+
+# Launch Crypto 8-bit
+CMD ["python3", "cryptology.py"]
 
 
