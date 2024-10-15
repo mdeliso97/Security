@@ -52,7 +52,7 @@ echo "Complete"
 
 echo "Installing dependencies..."
 
-apt install python3-pip
+apt install python3-pip -y
 
 apt install python3-tk -y
 
