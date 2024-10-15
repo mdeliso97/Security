@@ -52,6 +52,8 @@ echo "Complete"
 
 echo "Installing dependencies..."
 
+pip install python3-tk -y
+
 pip install -r requirements.txt
 
 echo "Complete"
