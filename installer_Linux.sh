@@ -6,7 +6,7 @@ python_version="3.9.13"
 
 python_path="$parent_dir/Utilities"
 
-sudo apt install python3-pip -y
+apt install python3-pip -y
 
 cd $python_path
 
@@ -22,7 +22,7 @@ cd "$python_path/Python-$python_version"
 
 make
 
-sudo make install
+make install
 
 echo "completed installation of Python $python_version"
 
@@ -30,7 +30,7 @@ echo "clean up..."
 
 cd $python_path
 
-sudo rm -rf Python-$python_version
+rm -rf Python-$python_version
 
 rm -f Python-$python_version.tgz
 
@@ -54,7 +54,7 @@ echo "Complete"
 
 echo "Installing dependencies..."
 
-pip install python3-tk -y
+pip install python3-tk
 
 pip install -r requirements.txt
 
