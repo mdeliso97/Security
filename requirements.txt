@@ -2,7 +2,7 @@ pygame == 2.5.2
 zipp ==	3.20.2
 wheel == 0.40.0
 six == 1.16.0
-setuptools == 58.1.0
+setuptools == 75.1.0
 python-dateutil	== 2.8.2
 pyparsing == 3.0.9
 pycryptodome == 3.21.0
@@ -12,7 +12,7 @@ Pillow == 10.4.0
 packaging == 23.0
 opencv-contrib-python == 4.7.0.72
 numpy == 2.1.2
-fonttools == 4.39.2
+fonttools == 4.54.1
 flatbuffers == 23.3.3
 cycler == 0.11.0
-cryptography == 41.0.4
+cryptography == 43.0.1

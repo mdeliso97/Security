@@ -6,8 +6,6 @@ python_version="3.9.13"
 
 python_path="$parent_dir/Utilities"
 
-apt install python3-pip -y
-
 cd $python_path
 
 echo "extract the source code..."
@@ -54,7 +52,9 @@ echo "Complete"
 
 echo "Installing dependencies..."
 
-pip install python3-tk
+apt install python3-pip
+
+apt install python3-tk -y
 
 pip install -r requirements.txt
 
