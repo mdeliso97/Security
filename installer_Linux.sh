@@ -40,37 +40,53 @@ cd $parent_dir
 
 echo "Initializing virtual environment..."
 
-python3 -m venv crypto_env
+# Check if virtual environment already exists
+if [ ! -d "crypto_env" ]; then
+    python3 -m venv crypto_env
+    echo "Virtual environment created."
+else
+    echo "Virtual environment already exists."
+fi
 
 echo "Complete"
 
 echo "Activating virtual environment..."
 
-source crypto_env/bin/activate
+. crypto_env/bin/activate
 
-echo "Complete"
+if [ $? -eq 0 ]; then
+    echo "Virtual environment activated successfully."
+else
+    echo "Failed to activate the virtual environment."
+    exit 1
+fi
 
 echo "Installing dependencies..."
 
-pip install python3-tk -y
-
+pip install python3-tk  # No -y option for pip
 pip install -r requirements.txt
 
-echo "Complete"
+echo "Dependencies installed."
 
 # Create a new shell script
+echo "Creating Crypto_8-bit.sh..."
 
 cat <<EOL > Crypto_8-bit.sh
-
 #!/bin/bash
 
 echo "Activating virtual environment..."
-source crypto_env/bin/activate
-echo "Activation complete."
+. crypto_env/bin/activate
 
-echo "Start application..."
+if [ $? -eq 0 ]; then
+    echo "Virtual environment activated successfully."
+else
+    echo "Failed to activate the virtual environment."
+    exit 1
+fi
+
+echo "Starting application..."
 python cryptology.py
-echo "Execution complete."
+echo "Application execution complete."
 EOL
 
 chmod +x Crypto_8-bit.sh
