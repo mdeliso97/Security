@@ -28,8 +28,6 @@ RUN git clone https://github.com/mdeliso97/Crypto_8-bit.git
 # Set working directory to the cloned repository
 WORKDIR /Crypto_8-bit
 
-RUN mkdir Results
-
 # Install Python dependencies
 RUN pip3 install -r requirements.txt
 
