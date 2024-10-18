@@ -17,7 +17,7 @@ sudo docker run -it \
     -e PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native \
     -v ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native \
     -v ~/.config/pulse/cookie:/root/.config/pulse/cookie \
-    -v ./crypto_folder:/data \
+    -v /home/usr/Crypto_8-bit/crypto_folder:/Crypto_8-bit/Results/ \
     --group-add $(getent group audio | cut -d: -f3) \
     crypto_8-bit:1.0.2
 

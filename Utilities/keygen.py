@@ -17,10 +17,10 @@ and private key. It follows the following steps:
 
 # outputs the key as json files
 def keygen_output(json_output_public, json_output_private):
-    with open("public_key.json", "w") as output_file:
+    with open("Results/public_key.json", "w") as output_file:
         output_file.write(json_output_public)
 
-    with open("private_key.json", "w") as output_file:
+    with open("Results/private_key.json", "w") as output_file:
         output_file.write(json_output_private)
 
 
