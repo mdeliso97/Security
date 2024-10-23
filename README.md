@@ -60,6 +60,7 @@ Download the GitHub repository from [Repository](https://GitHub.com/mdeliso97/Se
 To install the program you simply need on **Windows** to double-click the file ```installer_Windows.bat``` or execute the following 2 lines on Linux:
 
 ```chmod +x ./installer_Linux.sh```
+
 ```./installer_Linux.sh```
 
 . This program will do all the installation (including Python version 3.9.13) for you and create a separate file called ```Crypto_8-bit.bat``` or ```Crypto_8-bit.sh```. In addition, obsolete folders and files used for installation will be automatically uninstalled.
